@@ -1,15 +1,12 @@
-import { init as error404Init } from '../ts/404';
-import { init as loginInit } from '../ts/login';
-import { init as offlineInit } from '../ts/offline';
-import { init as dashboardInit } from '../ts/dashboard';
-import { init as cameraInit } from '../ts/camera';
-import { init as imageInit } from '../ts/image';
+import { RouteDeps, Routes } from '../utils/Types';
+import { DashboardView } from '../ts/DashboardView';
+import { LoginView } from '../ts/LoginView';
+import { QrScanCameraView } from '../ts/QrScanCameraView';
+import { QrScanImageView } from '../ts/QrScanImageView';
 
-export const routes = {
-    404: error404Init,
-    login: loginInit,
-    dashboard: dashboardInit,
-    offline: offlineInit,
-    camera: cameraInit,
-    image: imageInit,
-}
+export const routes: Routes = {
+    dashboard: (deps: RouteDeps) => new DashboardView(deps.api, deps.us, deps.rs!),
+    login: (deps: RouteDeps) => new LoginView(deps.api, deps.us, deps.rs, deps.ss),
+    camera: (deps: RouteDeps) => new QrScanCameraView(deps.qr!),
+    image: (deps: RouteDeps) => new QrScanImageView(deps.qr!),
+};

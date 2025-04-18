@@ -1,26 +1,42 @@
 // src/router/RouterService.ts
-import { InitFunction } from "../utils/Types";
+import { View } from "../interfaces/View";
+import { routes } from "../routes/Router";
+import { RouteDeps, Routes } from "../utils/Types";
 
 export class RouterService {
     private containerId: string;
     private currentView: string | null = null;
-    private routes: Record<string, InitFunction>;
+    private currentInstance: View | null = null;
     private userService: any;
     private apiService: any;
+    private routes: Routes;
+    private deps: RouteDeps;
+
+    private isInitialized = false;
 
     constructor(
-        userService: any,
-        apiService: any,
-        routes: Record<string, InitFunction>,
         containerId = 'app'
     ) {
         this.containerId = containerId;
         this.routes = routes;
-        this.userService = userService;
-        this.apiService = apiService;
+    }
+
+    public async init(deps: RouteDeps, initialView: string = 'dashboard') {
+        this.deps = deps
+        this.userService = deps.us;
+        this.apiService = deps.api;
+
+        this.isInitialized = true;
+
+        await this.navigate(initialView);
     }
 
     async navigate(viewName: string, params: any = {}) {
+        if (!this.isInitialized) {
+            console.error('RouterService not initialized. Call init(deps) first.');
+            return;
+        }
+
         try {
             const isLoggedIn = await this.userService.checkLogin();
 
@@ -45,6 +61,10 @@ export class RouterService {
         if (!container) return;
 
         try {
+            if (this.currentInstance) {
+                this.currentInstance.destroy();
+            }
+
             let htmlPath = `/views/${viewName}.html`; // Debes asegurarte que views/ esté en public/
 
             const response = await fetch(htmlPath);
@@ -56,11 +76,11 @@ export class RouterService {
             container.innerHTML = html;
             this.currentView = viewName;
 
-            const init = this.routes[viewName];
-            if (typeof init === 'function') {
-                init(params);
-            } else {
-                console.warn(`No init function for view "${viewName}"`);
+            const factory = this.routes[viewName];
+            if (typeof factory === 'function') {
+                const instance = factory(this.deps);
+                this.currentInstance = instance;
+                instance.init(params);
             }
         } catch (error) {
             console.error(`Error al cargar la vista "${viewName}"`, error);
@@ -70,9 +90,5 @@ export class RouterService {
 
     getCurrentView() {
         return this.currentView;
-    }
-
-    async start(initialView = 'dashboard') {
-        await this.navigate(initialView);
     }
 }
