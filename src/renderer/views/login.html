@@ -1,0 +1,21 @@
+<div
+  class="login max-w-sm mx-auto mt-16 p-6 rounded-2xl text-center shadow-lg bg-white dark:bg-gray-800 dark:text-white transition-all duration-300">
+  <div class="header">
+    <img src="assets/img/logo.png" alt="Logo" class="logo mx-auto mb-3 w-48">
+  </div>
+  <h2 class="text-2xl font-semibold mb-4">Iniciar sesión</h2>
+
+  <form id="loginForm" onsubmit="return false">
+    <input type="email" id="email" placeholder="Correo electrónico" required
+      class="w-full mb-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500">
+
+    <input type="password" id="password" placeholder="Contraseña" required
+      class="w-full mb-4 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500">
+
+    <button type="submit"
+      class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+      id="loginButton">
+      Entrar
+    </button>
+  </form>
+</div>

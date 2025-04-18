@@ -23,6 +23,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
+    "@zxing/browser": "^0.1.5",
     "electron-updater": "^6.3.9",
     "jquery": "^3.7.1",
     "material-icons": "^1.13.14"

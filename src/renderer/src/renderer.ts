@@ -1,6 +1,7 @@
 import '../assets/main.css'
 import $ from 'jquery'
 import { ThemeManager } from './utils/ThemeManager'
+import { AppContext } from './services/AppContext'
 
 function init(): void {
   $(() => {
@@ -8,6 +9,13 @@ function init(): void {
 
     const themeManager = new ThemeManager();
     themeManager.initThemeSelector();
+
+    AppContext.getInstance().router().start()
+
+    $(document).on('click', '#btnHome', function (e) {
+      e.preventDefault();
+      AppContext.getInstance().router().navigate('dashboard');
+    });
   })
 }
 
