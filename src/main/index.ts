@@ -3,6 +3,22 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 
+let authToken = null;
+
+ipcMain.handle('set-token', (event, token) => {
+  authToken = token;
+  return true;
+});
+
+ipcMain.handle('get-token', () => {
+  return authToken;
+});
+
+ipcMain.handle('remove-token', () => {
+  authToken = null;
+  return true;
+});
+
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
