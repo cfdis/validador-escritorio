@@ -1,42 +1,67 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <title>Validador CFDI</title>
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <title>Validador CFDI</title>
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self' http://localhost:8080 https://facturabilidad.com; img-src 'self' https://storage.googleapis.com data:" />
 
-    <link href="./assets/main.css" type="text/css" rel="stylesheet" />
-  </head>
+  <!-- <link href="./assets/main.css" type="text/css" rel="stylesheet" /> -->
+</head>
 
-  <body>
-    <div id="app">
-      <img alt="logo" class="logo" src="./assets/electron.svg" />
-      <div class="creator">Powered by electron-vite <i class="material-icons">home</i></div>
-      <i class="material-icons">home</i>
-      <div class="text">
-        Build an Electron app with
-        <span class="ts">TypeScript</span>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 h-screen min-h-screen">
+  <div class="wrapper mx-auto h-screen min-h-screen flex flex-col">
+    <header
+      class="header bg-white dark:bg-gray-800 text-gray-900 dark:text-white py-4 flex justify-between items-center px-6 shadow-md dark:shadow-none transition-colors duration-300">
+      <div class="logo flex text-2xl font-bold">
+        <img src="assets/img/logo.png" alt="Logo" class="h-12">
+        <span>Validador CFDI</span>
       </div>
-      <p class="tip">Please try pressing <code>F12</code> to open the devTool</p>
-      <div class="actions">
-        <div class="action">
-          <a href="https://electron-vite.org/" target="_blank" rel="noreferrer">Documentation</a>
-        </div>
-        <div class="action">
-          <a id="ipcHandler" target="_blank" rel="noreferrer">Send IPC</a>
+      <div class="flex items-center space-x-4">
+        <select id="theme-select"
+          class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white px-3 py-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200">
+          <option value="light">Claro</option>
+          <option value="dark">Oscuro</option>
+          <option value="system">Sistema</option>
+        </select>
+        <div id="userMenu" class="relative" style="display: none;">
+          <!-- Botón de usuario -->
+          <button id="userButton"
+            class="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <img id="userAvatar" src="assets/img/default-user.jpg" alt="User" class="w-full h-full object-cover">
+          </button>
+
+          <!-- Dropdown del usuario -->
+          <div id="userDropdown" style="display: none;"
+            class="absolute right-0 mt-2 w-56 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded shadow-lg z-20 text-left">
+            <div class="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+              <p id="userName" class="text-sm font-medium text-gray-900 dark:text-white">Usuario</p>
+              <p id="userEmail" class="text-sm text-gray-600 dark:text-gray-300">email@example.com</p>
+            </div>
+            <button id="logoutButton"
+              class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 dark:hover:bg-gray-500 dark:text-red-400">
+              Cerrar sesión
+            </button>
+          </div>
         </div>
       </div>
+    </header>
+    <main class="content flex-1">
+      <div id="spinner"
+        class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center"
+        style="display: none; background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; z-index: 1000;">
+        Cargando...
+      </div>
 
-      <ul class="versions w-full">
-        <li class="electron-version"></li>
-        <li class="chrome-version"></li>
-        <li class="node-version"></li>
-      </ul>
-    </div>
+      <div id="app" class="p-6 h-full"></div>
+    </main>
+    <footer
+      class="footer bg-white dark:bg-gray-800 text-gray-700 dark:text-white py-4 w-full text-center border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">
+      <div id="info"></div>
+    </footer>
 
-    <script type="module" src="./src/renderer.ts"></script>
-  </body>
+  </div>
+
+  <script type="module" src="./src/renderer.ts"></script>
+</body>
 </html>
