@@ -1,5 +1,6 @@
 <!doctype html>
 <html>
+
 <head>
   <meta charset="UTF-8" />
   <title>Validador CFDI</title>
@@ -9,11 +10,16 @@
   <!-- <link href="./assets/main.css" type="text/css" rel="stylesheet" /> -->
 </head>
 
-<body class="bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 h-screen min-h-screen">
+<body
+  class="bg-gray-200 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 h-screen min-h-screen">
   <div class="wrapper mx-auto h-screen min-h-screen flex flex-col">
     <header
       class="header bg-white dark:bg-gray-800 text-gray-900 dark:text-white py-4 flex justify-between items-center px-6 shadow-md dark:shadow-none transition-colors duration-300">
       <div class="logo flex text-2xl font-bold">
+        <button
+          class="btn h-10 w-10 btn-home bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200 rounded-full">
+          <i class="material-icons">home</i>
+        </button>
         <img src="assets/img/logo.png" alt="Logo" class="h-12">
         <span>Validador CFDI</span>
       </div>
@@ -64,4 +70,5 @@
 
   <script type="module" src="./src/renderer.ts"></script>
 </body>
+
 </html>

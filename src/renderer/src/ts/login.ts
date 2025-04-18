@@ -6,11 +6,8 @@ export function init() {
     const api = AppContext.getInstance().api();
     const ss = AppContext.getInstance().ss();
 
-    console.log('Login view loaded');
-
     $('#loginButton').on('click', function (e) {
         e.preventDefault();
-        console.log('Formulario enviado');
 
         const email = $('#email').val().trim().toLowerCase();
         const password = $('#password').val().trim();
@@ -24,7 +21,6 @@ export function init() {
 
         api.post('login', {}, { email: email.toLowerCase(), password })
             .then((response) => {
-                console.log('Login successful:', response);
                 window.auth.setToken(response.token).then((guardado) => {
                     if (guardado) {
                         rs.navigate('dashboard');

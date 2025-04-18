@@ -12,9 +12,12 @@ function init(): void {
 
     AppContext.getInstance().router().start()
 
-    $(document).on('click', '#btnHome', function (e) {
+    $(document).on('click', '.btn-home', function (e) {
       e.preventDefault();
-      AppContext.getInstance().router().navigate('dashboard');
+      const vistaActual = AppContext.getInstance().router().getCurrentView();
+      if (vistaActual !== 'dashboard' && vistaActual !== 'login') {
+        AppContext.getInstance().router().navigate('dashboard');
+      }
     });
   })
 }

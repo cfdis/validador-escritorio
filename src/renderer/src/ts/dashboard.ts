@@ -7,7 +7,6 @@ import { RouterService } from '../services/RouterService';
 export function initListeners(api: ApiService, us: UserService, rs: RouterService) {
     $('#verEmpresas').on('click', function (e) {
         e.preventDefault();
-        getEmpresas(api);
     });
 
     $('#userButton').on('click', function (e) {
@@ -45,18 +44,8 @@ export function initListeners(api: ApiService, us: UserService, rs: RouterServic
     });
 }
 
-function getEmpresas(api: ApiService) {
-    api.get('empresas', { q: 'Eduardo' }).then(response => {
-        console.log('Empresas:', response);
-    }).catch(error => {
-        console.error('Error fetching empresas:', error);
-    });
-}
-
 function getUserInfo(us: UserService) {
     let currentUser = us.getUser();
-
-    console.log('User info:', currentUser);
 
     if (currentUser) {
         $('#userName').text(currentUser.name || 'Usuario');

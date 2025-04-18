@@ -1,7 +1,9 @@
 import $ from 'jquery';
 import { AppContext } from '../services/AppContext';
+import { renderQrTable, showToast } from '../utils/qrScanShared';
 
 let selectedDeviceId: string | null = null;
+const qrResults: Record<string, string>[] = [];
 
 export function init() {
     const qr = AppContext.getInstance().qr();
@@ -27,8 +29,8 @@ export function init() {
             return;
         }
 
-        $('#videoElement').removeClass('hidden');
         $('#stopCameraBtn').removeClass('hidden');
+        $('#startCameraBtn').addClass('hidden');
 
         await qr.startCamera(videoElement, onsuccess, onerror, onException, selectedDeviceId);
     });
@@ -36,14 +38,44 @@ export function init() {
     $('#stopCameraBtn').on('click', function (e) {
         e.preventDefault();
         qr.stopCamera(videoElement);
-        $('#videoElement').addClass('hidden');
+        $('#startCameraBtn').removeClass('hidden');
         $('#stopCameraBtn').addClass('hidden');
+    });
+
+    $(document).on('click', '.btn-home', function (e) {
+        e.preventDefault();
+        qr.stopCamera(videoElement);
+    });
+
+    $(document).on('click', '.btn-remove', function () {
+        const index = parseInt($(this).data('index'), 10);
+        if (!isNaN(index)) {
+            qrResults.splice(index, 1);
+            renderQrTable('cameraQrResultContainer', qrResults);
+        }
+    });
+
+    $('#validateQrBtn').on('click', function () {
+        console.log('Validando los siguientes QR:', qrResults);
+        alert(`Aún no implementado, pero tenemos ${qrResults.length} CFDI(s) listos para validar.`);
     });
 }
 
-function onsuccess(result: string) {
+function onsuccess(result: Record<string, string> | null) {
     console.log('QR Code result:', result);
-    $('#qrResult').removeClass('hidden').text(result);
+    if (!result) {
+        alert('No se detectó un código QR válido. Intenta de nuevo.');
+        return;
+    }
+
+    const alreadyExists = qrResults.some(r => r.id === result.id);
+
+    if (!alreadyExists) {
+        qrResults.push(result);
+        renderQrTable('cameraQrResultContainer', qrResults);
+    } else {
+        showToast('Este CFDI ya fue escaneado.');
+    }
 }
 
 function onerror(error: any) {

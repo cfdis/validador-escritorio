@@ -1,3 +1,4 @@
+import { is } from '@electron-toolkit/utils';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import { NotFoundException } from '@zxing/library';
 
@@ -11,16 +12,18 @@ export class QrService {
 
     async startCamera(
         videoElement: HTMLVideoElement,
-        onSuccess: (text: string) => void,
+        onSuccess: (scanResult: Record<string, string> | null) => void,
         onError?: (error: any) => void,
         onException?: (e: any) => void,
         deviceIdOverride?: string
     ) {
-        let isProcessing = false;
+        let isCooldown = false;
         try {
             this.videoStream = await navigator.mediaDevices.getUserMedia({
                 video: {
-                    deviceId: deviceIdOverride ? { exact: deviceIdOverride } : undefined
+                    deviceId: deviceIdOverride ? { exact: deviceIdOverride } : undefined,
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
                 }
             });
 
@@ -28,10 +31,16 @@ export class QrService {
             await videoElement.play();
 
             this.codeReader.decodeFromVideoElement(videoElement, (result, err) => {
-                if (result  && !isProcessing) {
-                    isProcessing = true;
-                    onSuccess(result.getText());
-                    this.stopCamera(videoElement);
+                if (isCooldown) return; // Si está en cooldown, no procesar el resultado
+                if (result) {
+                    const scanResult = this.processResult(result.getText());
+                    if (scanResult) {
+                        onSuccess(scanResult);
+                        isCooldown = true;
+                        setTimeout(() => {
+                            isCooldown = false;
+                        }, 2000); // cooldown de 2 segundos para evitar detectar el mismo qr repetidamente
+                    }
                 }
                 if (err && !(err instanceof NotFoundException)) {
                     if (onError) onError(err);
@@ -51,13 +60,13 @@ export class QrService {
         this.codeReader = new BrowserQRCodeReader(); // limpia el estado interno
     }
 
-    async scanImage(file: File): Promise<string | null> {
+    async scanImage(file: File): Promise<Record<string, string> | null> {
         const reader = new FileReader();
         return new Promise((resolve, reject) => {
             reader.onload = async () => {
                 try {
                     const result = await this.codeReader.decodeFromImageUrl(reader.result as string);
-                    resolve(result.getText());
+                    resolve(this.processResult(result.getText()));
                 } catch (e) {
                     resolve(null); // No se detectó QR
                 }
@@ -65,5 +74,42 @@ export class QrService {
             reader.onerror = reject;
             reader.readAsDataURL(file);
         });
+    }
+
+    private processResult(raw: string): Record<string, string> | null {
+        if (!raw || typeof raw !== 'string') {
+            return null;
+        }
+        const isValidUrl = raw.startsWith('https://verificacfdi.facturaelectronica.sat.gob.mx/');
+
+        if (!isValidUrl) {
+            return null;
+        }
+
+        try {
+            const url = new URL(raw);
+            const params = new URLSearchParams(url.search);
+
+            const id = params.get('id');
+            const re = params.get('re');
+            const rr = params.get('rr');
+            const tt = params.get('tt');
+            const fe = params.get('fe');
+
+            if (!id || !re || !rr || !tt || !fe) {
+                return null;
+            }
+
+            return {
+                'id': id,
+                're': re,
+                'rr': rr,
+                'tt': tt,
+                'fe': fe
+            }
+
+        } catch (error) {
+            return null;
+        }
     }
 }
