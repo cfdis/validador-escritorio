@@ -7,6 +7,7 @@ import { UserService } from './services/UserService'
 import { RouterService } from './services/RouterService'
 import { QrService } from './services/QrService'
 import { RouteDeps } from './utils/Types'
+import { ToastService } from './services/ToastService'
 
 let deps: any = null;
 
@@ -46,6 +47,7 @@ function initRouter(): void {
   let apiService = new ApiService();
   let userService = new UserService(apiService, spinnerService);
   let qrService = new QrService();
+  let toastService = new ToastService();
 
   let routerService = new RouterService();
   deps = {
@@ -53,6 +55,7 @@ function initRouter(): void {
     us: userService,
     ss: spinnerService,
     qr: qrService,
+    ts: toastService,
     rs: routerService,
   }
   routerService.init(deps as RouteDeps);

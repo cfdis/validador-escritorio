@@ -1,13 +1,15 @@
 import $ from 'jquery';
-import { renderQrTable, showToast } from '../utils/qrScanShared';
+import { renderQrTable } from '../utils/qrScanShared';
 import type { View } from '../interfaces/View';
 import { QrService } from '../services/QrService';
+import { ToastService } from '../services/ToastService';
 
 export class QrScanImageView implements View {
     private qrResults: Record<string, string>[] = [];
 
     constructor(
-        private qr: QrService
+        private qr: QrService,
+        private ss: ToastService,
     ) { }
 
     public init(): void {
@@ -31,7 +33,7 @@ export class QrScanImageView implements View {
                         this.qrResults.push(result);
                         renderQrTable('imageQrResultContainer', this.qrResults);
                     } else {
-                        showToast('Este CFDI ya fue escaneado.');
+                        this.ss.warning('Ya procesado', 'Este CFDI ya fue procesado.');
                     }
                     anyFound = true;
                 }

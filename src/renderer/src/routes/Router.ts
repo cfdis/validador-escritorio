@@ -7,6 +7,6 @@ import { QrScanImageView } from '../ts/QrScanImageView';
 export const routes: Routes = {
     dashboard: (deps: RouteDeps) => new DashboardView(deps.api, deps.us, deps.rs!),
     login: (deps: RouteDeps) => new LoginView(deps.api, deps.us, deps.rs, deps.ss),
-    camera: (deps: RouteDeps) => new QrScanCameraView(deps.qr!),
-    image: (deps: RouteDeps) => new QrScanImageView(deps.qr!),
+    camera: (deps: RouteDeps) => new QrScanCameraView(deps.qr!, deps.ts!),
+    image: (deps: RouteDeps) => new QrScanImageView(deps.qr!, deps.ts!),
 };

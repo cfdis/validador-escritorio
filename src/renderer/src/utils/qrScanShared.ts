@@ -5,7 +5,6 @@ export function renderQrTable(tableContainerId: string, qrResults: Record<string
     const tbody = $('#' + tableContainerId).find('tbody');
 
     if (tbody.length === 0) {
-        showToast(`No se encontró el contenedor de la tabla: ${tableContainerId}`);
         return;
     }
 
@@ -29,13 +28,4 @@ export function renderQrTable(tableContainerId: string, qrResults: Record<string
     });
 
     $('#' + tableContainerId).toggle(qrResults.length > 0);
-}
-
-export function showToast(message: string) {
-    const toast = $('#toast');
-    toast.text(message).removeClass('opacity-0');
-
-    setTimeout(() => {
-        toast.addClass('opacity-0');
-    }, 2000);
 }

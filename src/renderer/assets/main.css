@@ -1,20 +1,6 @@
 @import './tailwind.css';
+@import './base.css';
 @import 'material-icons/iconfont/material-icons.css';
-
-.overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  background-color: rgba(255, 255, 255, 0.5);
-}
-
-.dark .overlay {
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.btn {
-  cursor: pointer;
-}
 
 .login .logo {
   filter: invert(1) hue-rotate(180deg);

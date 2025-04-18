@@ -1,7 +1,8 @@
 import $ from 'jquery';
-import { renderQrTable, showToast } from '../utils/qrScanShared';
+import { renderQrTable } from '../utils/qrScanShared';
 import type { View } from '../interfaces/View';
 import { QrService } from '../services/QrService';
+import { ToastService } from '../services/ToastService';
 
 export class QrScanCameraView implements View {
     private selectedDeviceId: string | null = null;
@@ -10,7 +11,8 @@ export class QrScanCameraView implements View {
     private cameraSelect: any;
 
     constructor(
-        private qr: QrService
+        private qr: QrService,
+        private ss: ToastService,
     ) {
         this.videoElement = $('#videoElement')[0] as HTMLVideoElement;
         this.cameraSelect = $('#cameraSelect');
@@ -87,7 +89,7 @@ export class QrScanCameraView implements View {
             this.qrResults.push(result);
             renderQrTable('cameraQrResultContainer', this.qrResults);
         } else {
-            showToast('Este CFDI ya fue escaneado.');
+            this.ss.warning('Ya escaneado', 'Este CFDI ya fue escaneado.');
         }
     }
 
