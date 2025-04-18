@@ -1,0 +1,1 @@
+export type InitFunction = (params?: any) => void;

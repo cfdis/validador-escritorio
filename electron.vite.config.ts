@@ -7,5 +7,7 @@ export default defineConfig({
   preload: {
     plugins: [externalizeDepsPlugin()]
   },
-  renderer: {}
+  renderer: {
+    appType: 'mpa',
+  }
 })
