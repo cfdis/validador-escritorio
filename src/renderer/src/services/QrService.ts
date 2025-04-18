@@ -1,16 +1,18 @@
-import { is } from '@electron-toolkit/utils';
 import { BrowserQRCodeReader } from '@zxing/browser';
 import { NotFoundException } from '@zxing/library';
+import { PdfService } from './PdfService';
 
 export class QrService {
     private codeReader: BrowserQRCodeReader;
     private videoStream: MediaStream | null = null;
 
-    constructor() {
+    constructor(
+        private pdfS: PdfService,
+    ) {
         this.codeReader = new BrowserQRCodeReader();
     }
 
-    async startCamera(
+    public async startCamera(
         videoElement: HTMLVideoElement,
         onSuccess: (scanResult: Record<string, string> | null) => void,
         onError?: (error: any) => void,
@@ -51,7 +53,7 @@ export class QrService {
         }
     }
 
-    stopCamera(videoElement: HTMLVideoElement) {
+    public stopCamera(videoElement: HTMLVideoElement) {
         if (this.videoStream) {
             this.videoStream.getTracks().forEach(track => track.stop());
             this.videoStream = null;
@@ -60,7 +62,7 @@ export class QrService {
         this.codeReader = new BrowserQRCodeReader(); // limpia el estado interno
     }
 
-    async scanImage(file: File): Promise<Record<string, string> | null> {
+    public async scanImage(file: File): Promise<Record<string, string> | null> {
         const reader = new FileReader();
         return new Promise((resolve, reject) => {
             reader.onload = async () => {
@@ -74,6 +76,24 @@ export class QrService {
             reader.onerror = reject;
             reader.readAsDataURL(file);
         });
+    }
+
+    public scanCanvas(canvas: HTMLCanvasElement): Record<string, string> | null {
+        try {
+            const result = this.codeReader.decodeFromCanvas(canvas);
+            return this.processResult(result.getText());
+        } catch {
+            return null;
+        }
+    }
+
+    public async scanFromPdf(file: File): Promise<Record<string, string> | null> {
+        const canvases = await this.pdfS.getAsImages(file);
+        for (const canvas of canvases) {
+            const qr = this.scanCanvas(canvas);
+            if (qr) return qr;
+        }
+        return null;
     }
 
     private processResult(raw: string): Record<string, string> | null {

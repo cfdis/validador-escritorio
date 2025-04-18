@@ -8,6 +8,7 @@ import { RouterService } from './services/RouterService'
 import { QrService } from './services/QrService'
 import { RouteDeps } from './utils/Types'
 import { ToastService } from './services/ToastService'
+import { PdfService } from './services/PdfService'
 
 let deps: any = null;
 
@@ -46,7 +47,8 @@ function initRouter(): void {
   let spinnerService = new SpinnerService();
   let apiService = new ApiService();
   let userService = new UserService(apiService, spinnerService);
-  let qrService = new QrService();
+  let pdfService = new PdfService();
+  let qrService = new QrService(pdfService);
   let toastService = new ToastService();
 
   let routerService = new RouterService();

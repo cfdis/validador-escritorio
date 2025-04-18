@@ -1,4 +1,3 @@
-// src/router/RouterService.ts
 import { View } from "../interfaces/View";
 import { routes } from "../routes/Router";
 import { RouteDeps, Routes } from "../utils/Types";
