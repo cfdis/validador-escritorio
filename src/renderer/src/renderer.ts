@@ -2,13 +2,14 @@ import '../assets/main.css'
 import $ from 'jquery'
 import { ThemeManager } from './utils/ThemeManager'
 import { SpinnerService } from './services/SpinnerService'
-import { ApiService } from './services/ApiService'
-import { UserService } from './services/UserService'
+import { FrontApiService } from './services/FrontApiService'
+import { FrontUserService } from './services/FrontUserService'
 import { RouterService } from './services/RouterService'
 import { QrService } from './services/QrService'
 import { RouteDeps } from './utils/Types'
 import { ToastService } from './services/ToastService'
 import { PdfService } from './services/PdfService'
+import { ApiErrorDetails } from './utils/Interfaces'
 
 let deps: any = null;
 
@@ -45,11 +46,11 @@ function init(): void {
 
 function initRouter(): void {
   let spinnerService = new SpinnerService();
-  let apiService = new ApiService();
-  let userService = new UserService(apiService, spinnerService);
+  let toastService = new ToastService();
+  let apiService = new FrontApiService(toastService);
+  let userService = new FrontUserService(toastService);
   let pdfService = new PdfService();
   let qrService = new QrService(pdfService);
-  let toastService = new ToastService();
 
   let routerService = new RouterService();
   deps = {
@@ -76,10 +77,19 @@ function toggleMenu() {
   menu.toggle();
 }
 
-async function logout(e) {
+function logout(e) {
   e.preventDefault();
-  await deps.us.logout();
-  deps.rs.navigate('login');
+  deps.us.logout().then(() => {
+    toggleMenu();
+    $('#userName').text('Usuario');
+    $('#userEmail').text('');
+    $('#userAvatar').attr('src', 'assets/img/default-user.jpg');
+    $('#userMenu').hide();
+
+    deps.rs.navigate('login');
+  }).catch((error: ApiErrorDetails) => {
+    deps.us.handleError(error);
+  });
 }
 
 init()

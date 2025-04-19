@@ -1,14 +1,10 @@
 import $ from 'jquery';
-import { ApiService } from '../services/ApiService';
-import { UserService } from '../services/UserService';
 import { RouterService } from '../services/RouterService';
 import { View } from '../interfaces/View';
 import { ToastService } from '../services/ToastService';
 
 export class DashboardView implements View {
     constructor(
-        private api: ApiService,
-        private us: UserService,
         private rs: RouterService,
     ) { }
 

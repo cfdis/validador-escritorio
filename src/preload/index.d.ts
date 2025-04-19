@@ -1,12 +1,22 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
+import { ApiErrorDetails, ApiResponse } from '../renderer/src/utils/Interfaces'
 
 declare global {
   interface Window {
     electron: ElectronAPI
     auth: {
-      setToken: (token: string) => Promise<boolean>
-      getToken: () => Promise<string | null>
-      removeToken: () => Promise<boolean>
+      login: (username: string, password: string) => Promise<ApiResponse<void | ApiErrorDetails>>
+      logout: () => Promise<void | ApiErrorDetails>
+      getUser: () => Promise<any | ApiErrorDetails>
+      checkLogin: (empresaId?: number) => Promise<boolean | ApiErrorDetails>
+    }
+    api: {
+      get: (endpoint: string, urlParams?: any) => Promise<any>
+      post: (endpoint: string, urlParams?: any, data?: any, useAuth?: boolean) => Promise<any>
+      put: (endpoint: string, urlParams?: any, data?: any) => Promise<any>
+      delete: (endpoint: string, urlParams?: any) => Promise<any>
+      uploadFile: (endpoint: string, file: any, data?: any) => Promise<any>
+      uploadFileProgress: (endpoint: string, files: any, params?: any, data?: any, onProgress?: any, method?: string) => Promise<any>
     }
   }
 }

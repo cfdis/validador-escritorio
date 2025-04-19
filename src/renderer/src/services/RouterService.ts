@@ -1,13 +1,15 @@
 import { View } from "../interfaces/View";
 import { routes } from "../routes/Router";
 import { RouteDeps, Routes } from "../utils/Types";
+import { FrontApiService } from "./FrontApiService";
+import { FrontUserService } from "./FrontUserService";
 
 export class RouterService {
     private containerId: string;
     private currentView: string | null = null;
     private currentInstance: View | null = null;
-    private userService: any;
-    private apiService: any;
+    private userService: FrontUserService;
+    private apiService: FrontApiService;
     private routes: Routes;
     private deps: RouteDeps;
 

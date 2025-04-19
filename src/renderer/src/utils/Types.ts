@@ -1,16 +1,16 @@
 import { View } from "../interfaces/View";
-import { ApiService } from "../services/ApiService";
+import { FrontApiService } from "../services/FrontApiService";
 import { QrService } from "../services/QrService";
 import { RouterService } from "../services/RouterService";
 import { SpinnerService } from "../services/SpinnerService";
 import { ToastService } from "../services/ToastService";
-import { UserService } from "../services/UserService";
+import { FrontUserService } from "../services/FrontUserService";
 
 export type Routes = Record<string, RouteFactory>;
 export type RouteFactory = (deps: RouteDeps) => View;
 export type RouteDeps = {
-    api: ApiService;
-    us: UserService;
+    api: FrontApiService;
+    us: FrontUserService;
     ss?: SpinnerService;
     qr?: QrService;
     ts?: ToastService;

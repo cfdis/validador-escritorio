@@ -6,7 +6,7 @@ export class ToastService {
     private containerId = 'toast-container';
     private defaultConfig: ToastConfig = {
         autoHide: true,
-        duration: 3000,
+        duration: 5000,
         fullWidth: false,
         closeable: true,
         message: '',

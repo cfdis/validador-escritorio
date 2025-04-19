@@ -26,3 +26,26 @@ export interface ToastConfig {
     duration?: number; // ms
     closeable?: boolean;
 }
+
+export interface ApiResponse<T> {
+    success: boolean;
+    data: T;
+}
+
+export interface ApiErrorDetails {
+    message: string;
+    status: number;
+    statusText?: string;
+    code?: string;
+}
+
+export interface User {
+    id: number;
+    name: string;
+    email: string;
+    avatar?: string;
+    // permissions?: Permiso[];
+    // empresas?: { [k: string]: Empresa };
+    // roles?: Role[];
+    email_verified_at: string | null;
+}
