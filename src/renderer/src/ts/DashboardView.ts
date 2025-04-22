@@ -14,8 +14,8 @@ export class DashboardView implements View {
 
     private bindEvents() {
         $('#scanFromCamera').on('click', () => this.rs.navigate('camera'));
-        $('#scanFromImage').on('click', () => this.rs.navigate('image'));
-        $('#scanFromPdf').on('click', () => this.rs.navigate('pdf'));
+        $('#scanFromImage').on('click', () => this.rs.navigate('scanFile', { type: 'image' }));
+        $('#scanFromPdf').on('click', () => this.rs.navigate('scanFile', { type: 'pdf' }));
     }
 
     destroy() {

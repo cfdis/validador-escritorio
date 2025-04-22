@@ -2,8 +2,6 @@ import { User } from "../utils/Interfaces";
 import { FrontApi } from "./FrontApi";
 import { ToastService } from "./ToastService";
 
-const { ipcRenderer } = window.require?.('electron') ?? {};
-
 export class FrontUserService extends FrontApi {
     _user = undefined;
     _empresas = {};
@@ -12,14 +10,12 @@ export class FrontUserService extends FrontApi {
     lastCheckLoginResult = null;
     checkLoginPromise = null;
     cacheTTL = 500;
-    private api: typeof window.api;
     private auth: typeof window.auth;
 
     constructor(
         ts: ToastService,
     ) {
         super(ts);
-        this.api = window.api;
         this.auth = window.auth;
     }
 
@@ -38,7 +34,7 @@ export class FrontUserService extends FrontApi {
         return this.handleResponse<User>(response);
     }
 
-    async checkLogin(empresaId = null) {
+    async checkLogin(empresaId?: number) {
         const response = await this.auth.checkLogin(empresaId);
         return this.handleResponse<boolean>(response);
     }

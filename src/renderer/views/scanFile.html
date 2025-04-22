@@ -1,16 +1,17 @@
 <div class="flex flex-col items-center justify-center h-full space-y-4 text-white">
-    <h2 class="text-xl font-semibold">Escanear QR desde imagen</h2>
+    <h2 class="text-xl font-semibold" id="uploadTitle">Escanear QR</h2>
 
-    <input type="file" id="imageInput" accept="image/*"
+    <input type="file" id="fileInput" accept="application/pdf" multiple
         class="file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700" />
 
-    <div id="imageQrResultContainer" class="w-full max-w-2xl mt-6 hidden">
+    <div id="qrResultContainer" class="w-full mt-6 hidden">
         <h3 class="text-lg font-semibold mb-2 text-center">CFDIs escaneados</h3>
 
         <div class="overflow-x-auto rounded-lg border border-gray-600 shadow">
             <table class="min-w-full bg-gray-800 text-white text-sm rounded-lg">
                 <thead class="bg-gray-700 text-gray-300">
                     <tr>
+                        <th class="px-3 py-2 text-left">Archivo</th>
                         <th class="px-3 py-2 text-left">ID</th>
                         <th class="px-3 py-2 text-left">Emisor</th>
                         <th class="px-3 py-2 text-left">Receptor</th>
@@ -18,7 +19,7 @@
                         <th class="px-3 py-2 text-left">Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="imageQrResultsTableBody"></tbody>
+                <tbody id="qrResultsTableBody"></tbody>
             </table>
         </div>
 

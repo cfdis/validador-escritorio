@@ -17,3 +17,11 @@ export type RouteDeps = {
     rs?: RouterService;
 };
 export type ToastType = 'info' | 'warning' | 'error' | 'success';
+
+export type QrParams = {
+    id: string;
+    re: string;
+    rr: string;
+    tt: string;
+    fe: string;
+}

@@ -1,6 +1,7 @@
 import { BrowserQRCodeReader } from '@zxing/browser';
 import { NotFoundException } from '@zxing/library';
 import { PdfService } from './PdfService';
+import { QrParams } from '../utils/Types';
 
 export class QrService {
     private codeReader: BrowserQRCodeReader;
@@ -62,7 +63,7 @@ export class QrService {
         this.codeReader = new BrowserQRCodeReader(); // limpia el estado interno
     }
 
-    public async scanImage(file: File): Promise<Record<string, string> | null> {
+    public async scanImage(file: File): Promise<QrParams | null> {
         const reader = new FileReader();
         return new Promise((resolve, reject) => {
             reader.onload = async () => {
@@ -78,7 +79,7 @@ export class QrService {
         });
     }
 
-    public scanCanvas(canvas: HTMLCanvasElement): Record<string, string> | null {
+    public scanCanvas(canvas: HTMLCanvasElement): QrParams | null {
         try {
             const result = this.codeReader.decodeFromCanvas(canvas);
             return this.processResult(result.getText());
@@ -87,7 +88,7 @@ export class QrService {
         }
     }
 
-    public async scanFromPdf(file: File): Promise<Record<string, string> | null> {
+    public async scanFromPdf(file: File): Promise<QrParams | null> {
         const canvases = await this.pdfS.getAsImages(file);
         for (const canvas of canvases) {
             const qr = this.scanCanvas(canvas);
@@ -96,7 +97,7 @@ export class QrService {
         return null;
     }
 
-    private processResult(raw: string): Record<string, string> | null {
+    private processResult(raw: string): QrParams | null {
         if (!raw || typeof raw !== 'string') {
             return null;
         }

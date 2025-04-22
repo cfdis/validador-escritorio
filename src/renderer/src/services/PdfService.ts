@@ -32,8 +32,6 @@ export class PdfService {
             };
             await pdfPage.render(renderContext).promise;
 
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
             images.push(canvas);
         }
 

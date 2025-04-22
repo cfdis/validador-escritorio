@@ -8,11 +8,10 @@ export class RouterService {
     private containerId: string;
     private currentView: string | null = null;
     private currentInstance: View | null = null;
-    private userService: FrontUserService;
-    private apiService: FrontApiService;
+    private userService: FrontUserService | null = null;
+    private apiService: FrontApiService | null = null;
     private routes: Routes;
-    private deps: RouteDeps;
-
+    private deps: RouteDeps | null = null;
     private isInitialized = false;
 
     constructor(
@@ -39,7 +38,7 @@ export class RouterService {
         }
 
         try {
-            const isLoggedIn = await this.userService.checkLogin();
+            const isLoggedIn = await this.userService!.checkLogin();
 
             if (isLoggedIn) {
                 await this._loadView(viewName, params);
@@ -52,7 +51,7 @@ export class RouterService {
                 await this._loadView('offline');
             } else {
                 await this._loadView('login');
-                this.apiService.handleError(err);
+                this.apiService!.handleError(err);
             }
         }
     }
@@ -62,7 +61,7 @@ export class RouterService {
         if (!container) return;
 
         try {
-            if (this.currentInstance) {
+            if (this.currentInstance && this.currentInstance.destroy) {
                 this.currentInstance.destroy();
             }
 
@@ -79,7 +78,7 @@ export class RouterService {
 
             const factory = this.routes[viewName];
             if (typeof factory === 'function') {
-                const instance = factory(this.deps);
+                const instance = factory(this.deps!);
                 this.currentInstance = instance;
                 instance.init(params);
             }
