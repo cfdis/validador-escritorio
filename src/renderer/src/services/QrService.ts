@@ -15,7 +15,7 @@ export class QrService {
 
     public async startCamera(
         videoElement: HTMLVideoElement,
-        onSuccess: (scanResult: Record<string, string> | null) => void,
+        onSuccess: (scanResult: QrParams | null) => void,
         onError?: (error: any) => void,
         onException?: (e: any) => void,
         deviceIdOverride?: string

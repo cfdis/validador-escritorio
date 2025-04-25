@@ -1,10 +1,8 @@
-import { ApiErrorDetails } from "../utils/Interfaces";
 import { ApiService } from "./ApiService";
 
 export class UserService {
-    _api = null;
-    checkLoginPromise = null;
-    lastCheckLoginResult = null;
+    checkLoginPromise: Promise<boolean> | null = null;
+    lastCheckLoginResult: boolean | null = null;
     lastCheckLoginTime = 0;
     cacheTTL = 500;
     _user = undefined;
@@ -14,8 +12,7 @@ export class UserService {
     // _empresas = {};
 
 
-    constructor(apiService: ApiService) {
-        this._api = apiService;
+    constructor(private _api: ApiService) {
         // this.sat = sat;
         // this.router = router;
     }
@@ -25,16 +22,6 @@ export class UserService {
         if (response?.token) {
             this._api.setToken(response.token);
         }
-        // return this._api.post('login', {}, { email, password })
-        //     .then((response) => {
-        //         return this._api.setToken(response.token) || 'Falló el inicio de sesión, intenta de nuevo más tarde.';
-        //     })
-        //     .catch((error) => {
-        //         if (error?.response?.status === 401 || error?.response?.status === 422) {
-        //             return 'Usuario o contraseña incorrectos';
-        //         }
-        //         throw error;
-        //     });
     }
 
     public async logout() {

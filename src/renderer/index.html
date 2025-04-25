@@ -52,16 +52,16 @@
         </div>
       </div>
     </header>
-    <main class="content flex-1 relative">
+    <main class="content flex-1 relative overflow-auto">
       <div id="spinner"
-        class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center"
-        style="display: none; background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; z-index: 1000;">
+        class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex items-center justify-center hidden"
+        style="background: rgba(0,0,0,0.7); color: white; padding: 10px; border-radius: 5px; z-index: 1000;">
         Cargando...
       </div>
 
       <div id="toast-container" class="absolute flex flex-col items-end top-0 right-0 ml-auto w-full space-y-2"></div>
 
-      <div id="app" class="p-6 h-full"></div>
+      <div id="app" class="p-6"></div>
     </main>
     <footer
       class="footer bg-white dark:bg-gray-800 text-gray-700 dark:text-white py-4 w-full text-center border-t border-gray-200 dark:border-gray-700 transition-colors duration-300">

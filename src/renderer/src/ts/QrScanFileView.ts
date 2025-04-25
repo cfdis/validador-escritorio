@@ -2,15 +2,20 @@ import $ from 'jquery';
 import type { View } from '../interfaces/View';
 import { QrService } from '../services/QrService';
 import { ToastService } from '../services/ToastService';
-import { QrParams } from '../utils/Types';
+import { QrParams, ValidacionCfdiResponse } from '../utils/Types';
+import { SpinnerService } from '../services/SpinnerService';
+import { DataEntry } from '../utils/Interfaces';
+import { ValidacionService } from '../services/ValidacionService';
 
 export class QrScanFileView implements View {
     private fileType: string = '';
-    private entries: FileEntry[] = [];
+    private entries: DataEntry[] = [];
 
     constructor(
         private qr: QrService,
-        private ss: ToastService,
+        private ts: ToastService,
+        private ss: SpinnerService,
+        private vs: ValidacionService,
     ) { }
 
     public init(params: any): void {
@@ -42,9 +47,9 @@ export class QrScanFileView implements View {
     private async procesarArchivos(files: File[]) {
         for (const file of files) {
             // si el archivo ya existe, no lo agregamos
-            const sameFile = this.entries.some(entry => entry.file.name === file.name && entry.file.size === file.size);
+            const sameFile = this.entries.some(entry => entry.file?.name === file.name && entry.file.size === file.size);
             if (sameFile) {
-                this.ss.warning('Archivo duplicado', `El archivo ${file.name} ya se encuentra en la lista.`);
+                this.ts.warning('Archivo duplicado', `El archivo ${file.name} ya se encuentra en la lista.`);
                 continue;
             }
 
@@ -57,67 +62,42 @@ export class QrScanFileView implements View {
                     qrData = await this.qr.scanFromPdf(file);
                     break;
                 case 'xml':
-                    // qrData = await this.qr.scanFromXml(file);
+                    qrData = await this.scanFromXml(file);
                     break;
             }
 
-            let fileEntry = {
+            let DataEntry = {
                 file: file,
                 qrData: qrData,
-            } as FileEntry;
+            } as DataEntry;
 
             // si ya existe una entrada con un id igual, no la agregamos
-            const alreadyExists = this.entries.some(entry => entry.qrData?.id === fileEntry.qrData?.id);
-            if (fileEntry.qrData && alreadyExists) {
-                this.ss.warning('Ya procesado', `El CFDI con ID ${fileEntry.qrData?.id} ya se encuentra en la lista.`);
+            const alreadyExists = this.entries.some(entry => entry.qrData?.id === DataEntry.qrData?.id);
+            if (DataEntry.qrData && alreadyExists) {
+                this.ts.warning('Ya procesado', `El CFDI con ID ${DataEntry.qrData?.id} ya se encuentra en la lista.`);
                 continue;
             }
 
-            this.entries.push(fileEntry);
+            this.entries.push(DataEntry);
         }
-        this.renderTable(this.entries);
+        this.vs.renderTable('qrResultContainer', this.entries);
     }
 
-    private renderTable(entries: FileEntry[]): void {
-        const tbody = $('#qrResultsTableBody');
-        if (tbody.length === 0 || entries.length === 0) {
-            return;
-        }
-
-        tbody.empty();
-
-        entries.forEach((item, index) => {
-
-            let data = `<td colspan="4" class="px-3 py-2"> No se encontró un QR válido </td>`;
-
-            if (item.qrData) {
-                data = `
-                    <td class="px-3 py-2">${item.qrData.id}</td>
-                    <td class="px-3 py-2">${item.qrData.re}</td>
-                    <td class="px-3 py-2">${item.qrData.rr}</td>
-                    <td class="px-3 py-2">$${item.qrData.tt}</td>
-                `;
-            }
-
-            const row = $(`
-                <tr class="border-b border-gray-600">
-                    <td class="px-3 py-2">${item.file.name}</td>
-                    ${data}
-                    <td class="px-3 py-2">
-                        <button class="text-red-500 hover:text-red-700 font-semibold btn-remove" data-index="${index}">
-                            <i class="material-icons">delete</i>
-                        </button>
-                    </td>
-                </tr>
-            `);
-            tbody.append(row);
+    private scanFromXml(file: File): Promise<QrParams | null> {
+        const xmlApi = window.xml;
+        return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const xmlString = e.target?.result as string;
+                resolve(xmlApi.preProcess(xmlString));
+            };
+            reader.readAsText(file);
         });
-
-        $('#qrResultContainer').toggle(entries.length > 0);
     }
 
     private bindEvents(): void {
         $('#fileInput').on('change', async (e) => {
+            this.ss.show();
             const input = e.target as HTMLInputElement;
 
             if (!input.files || input.files.length === 0) return;
@@ -127,23 +107,31 @@ export class QrScanFileView implements View {
             this.procesarArchivos(files);
 
             input.value = '';
+            this.ss.hide();
         });
 
         $(document).on('click', '.btn-remove', (e) => {
             const index = parseInt($(e.currentTarget).data('index'), 10);
             if (!isNaN(index)) {
                 this.entries.splice(index, 1);
-                this.renderTable(this.entries);
+                this.vs.renderTable('qrResultContainer', this.entries);
             }
         });
 
         $('#validateQrBtn').on('click', () => {
-            let validos = this.entries.filter(entry => entry.qrData !== null);
-            if (validos.length === 0) {
-                this.ss.warning('No hay CFDI(s) para validar', 'Ningún archivo contiene un CFDI válido.');
-                return;
-            }
-            alert(`Aún no implementado, pero tenemos ${validos.length} CFDI(s) listos para validar.`);
+            this.vs.validate(this.entries).then((response: ValidacionCfdiResponse | void) => {
+                if (response) {
+                    response.forEach(element => {
+                        const index = this.entries.findIndex(entry => entry.qrData?.id === element.id);
+                        if (index !== -1) {
+                            this.entries[index].result = element;
+                        }
+                    });
+                    this.vs.renderTable('qrResultContainer', this.entries);
+                }
+            }).catch((err) => {
+                this.vs.handleError(err);
+            });
         });
     }
 
@@ -153,9 +141,4 @@ export class QrScanFileView implements View {
         $('#validateQrBtn').off('click');
         this.entries = [];
     }
-}
-
-interface FileEntry {
-    file: File;
-    qrData: Record<string, string> | null;
 }

@@ -4,22 +4,8 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { registerApiHandlers } from './ipc/apiHandlers'
 import { registerAuthHandlers } from './ipc/userHandlers'
-
-let authToken = null;
-
-ipcMain.handle('set-token', (event, token) => {
-  authToken = token;
-  return true;
-});
-
-ipcMain.handle('get-token', () => {
-  return authToken;
-});
-
-ipcMain.handle('remove-token', () => {
-  authToken = null;
-  return true;
-});
+import { registerXmlHandlers } from './ipc/xmlHandlers'
+import { registerValidacionHandlers } from './ipc/validacionHandlers'
 
 function createWindow(): void {
   // Create the browser window.
@@ -69,14 +55,13 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-  ipcMain.on('ping', () => console.log('pong'))
-
   createWindow()
 
   // Registering IPC handlers
   registerApiHandlers();
   registerAuthHandlers();
+  registerXmlHandlers();
+  registerValidacionHandlers();
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

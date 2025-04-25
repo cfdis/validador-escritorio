@@ -25,3 +25,12 @@ export interface ApiErrorDetails {
     statusText?: string;
     code?: string;
 }
+
+export type QrParams = {
+    id: string;
+    re: string;
+    rr: string;
+    tt: string;
+    fe: string;
+    xml?: string;
+}

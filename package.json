@@ -28,7 +28,8 @@
     "electron-updater": "^6.3.9",
     "jquery": "^3.7.1",
     "material-icons": "^1.13.14",
-    "pdfjs-dist": "^5.1.91"
+    "pdfjs-dist": "^5.1.91",
+    "xmldom": "^0.6.0"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",

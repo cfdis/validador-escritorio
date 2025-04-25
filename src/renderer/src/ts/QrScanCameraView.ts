@@ -1,18 +1,21 @@
 import $ from 'jquery';
-import { renderQrTable } from '../utils/qrScanShared';
+import { ValidacionService } from '../services/ValidacionService';
 import type { View } from '../interfaces/View';
 import { QrService } from '../services/QrService';
 import { ToastService } from '../services/ToastService';
+import { QrParams, ValidacionCfdiResponse } from '../utils/Types';
+import { DataEntry } from '../utils/Interfaces';
 
 export class QrScanCameraView implements View {
     private selectedDeviceId: string | null = null;
-    private qrResults: Record<string, string>[] = [];
+    private entries: DataEntry[] = [];
     private videoElement: HTMLVideoElement;
     private cameraSelect: any;
 
     constructor(
         private qr: QrService,
-        private ss: ToastService,
+        private ts: ToastService,
+        private vs: ValidacionService,
     ) {
         this.videoElement = $('#videoElement')[0] as HTMLVideoElement;
         this.cameraSelect = $('#cameraSelect');
@@ -65,40 +68,57 @@ export class QrScanCameraView implements View {
         $(document).on('click', '.btn-remove', (e) => {
             const index = parseInt($(e.currentTarget).data('index'), 10);
             if (!isNaN(index)) {
-                this.qrResults.splice(index, 1);
-                renderQrTable('cameraQrResultContainer', this.qrResults);
+                this.entries.splice(index, 1);
+                this.vs.renderTable('cameraQrResultContainer', this.entries);
             }
         });
 
         $('#validateQrBtn').on('click', () => {
-            console.log('Validando los siguientes QR:', this.qrResults);
-            alert(`Aún no implementado, pero tenemos ${this.qrResults.length} CFDI(s) listos para validar.`);
+            this.vs.validate(this.entries).then((response: ValidacionCfdiResponse | void) => {
+                if (response) {
+                    response.forEach(element => {
+                        const index = this.entries.findIndex(entry => entry.qrData?.id === element.id);
+                        if (index !== -1) {
+                            this.entries[index].result = element;
+                        }
+                    });
+
+                    this.vs.renderTable('cameraQrResultContainer', this.entries);
+                }
+            }).catch((err) => {
+                this.vs.handleError(err);
+            });
         });
     }
 
-    private onsuccess(result: Record<string, string> | null): void {
-        console.log('QR Code result:', result);
+    private onsuccess(result: QrParams | null): void {
         if (!result) {
             alert('No se detectó un código QR válido. Intenta de nuevo.');
             return;
         }
 
-        const alreadyExists = this.qrResults.some(r => r.id === result.id);
+        let fileEntry = {
+            qrData: result,
+        } as DataEntry;
 
-        if (!alreadyExists) {
-            this.qrResults.push(result);
-            renderQrTable('cameraQrResultContainer', this.qrResults);
-        } else {
-            this.ss.warning('Ya escaneado', 'Este CFDI ya fue escaneado.');
+        // si ya existe una entrada con un id igual, no la agregamos
+        const alreadyExists = this.entries.some(entry => entry.qrData?.id === fileEntry.qrData?.id);
+        if (fileEntry.qrData && alreadyExists) {
+            this.ts.warning('Ya escaneado', `El CFDI con ID ${fileEntry.qrData?.id} ya se encuentra en la lista.`);
+            return;
         }
+
+        this.entries.push(fileEntry);
+
+        this.vs.renderTable('cameraQrResultContainer', this.entries);
     }
 
     private onerror(error: any): void {
-        console.error('QR Code error:', error);
+        // console.error('QR Code error:', error);
     }
 
     private onException(e: any): void {
-        console.error('QR Code exception:', e);
+        // console.error('QR Code exception:', e);
         alert('Error al iniciar la cámara: ' + e.message);
     }
 
@@ -109,7 +129,7 @@ export class QrScanCameraView implements View {
         $(document).off('click', '.btn-remove');
         $('#validateQrBtn').off('click');
         this.qr.stopCamera(this.videoElement);
-        this.qrResults = [];
+        this.entries = [];
         this.cameraSelect.empty();
     }
 }

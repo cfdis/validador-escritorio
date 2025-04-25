@@ -10,6 +10,7 @@ import { RouteDeps } from './utils/Types'
 import { ToastService } from './services/ToastService'
 import { PdfService } from './services/PdfService'
 import { ApiErrorDetails } from './utils/Interfaces'
+import { ValidacionService } from './services/ValidacionService'
 
 let deps: any = null;
 
@@ -51,6 +52,7 @@ function initRouter(): void {
   let userService = new FrontUserService(toastService);
   let pdfService = new PdfService();
   let qrService = new QrService(pdfService);
+  let validacionService = new ValidacionService(toastService, spinnerService)
 
   let routerService = new RouterService();
   deps = {
@@ -60,6 +62,7 @@ function initRouter(): void {
     qr: qrService,
     ts: toastService,
     rs: routerService,
+    vs: validacionService,
   }
   routerService.init(deps as RouteDeps);
 }

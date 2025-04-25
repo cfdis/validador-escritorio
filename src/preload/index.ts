@@ -22,6 +22,15 @@ const api = {
     ipcRenderer.invoke('api:uploadFileProgress', { endpoint, files, params, data, onProgress, method })
 }
 
+// Custom XML API for renderer
+const xmlApi = {
+  preProcess: (xmlString: string) => ipcRenderer.invoke('xml:preProcess', xmlString)
+}
+
+const validationApi = {
+  validateBulk: (bulkEntries: any[]) => ipcRenderer.invoke('validate:bulk', bulkEntries)
+}
+
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
 // just add to the DOM global.
@@ -30,6 +39,8 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('auth', authApi)
     contextBridge.exposeInMainWorld('api', api)
+    contextBridge.exposeInMainWorld('xml', xmlApi)
+    contextBridge.exposeInMainWorld('validationApi', validationApi)
   } catch (error) {
     console.error(error)
   }
@@ -40,4 +51,8 @@ if (process.contextIsolated) {
   window.auth = authApi
   // @ts-ignore (define in dts)
   window.api = api
+  // @ts-ignore (define in dts)
+  window.xml = xmlApi
+  // @ts-ignore (define in dts)
+  window.validationApi = validationApi
 }

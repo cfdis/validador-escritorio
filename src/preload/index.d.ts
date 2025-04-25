@@ -1,5 +1,6 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
-import { ApiErrorDetails, ApiResponse } from '../renderer/src/utils/Interfaces'
+import { ApiErrorDetails, ApiResponse, DataEntry } from '../renderer/src/utils/Interfaces'
+import { QrParams, ValidacionCfdiResponse } from '../renderer/src/utils/Types'
 
 declare global {
   interface Window {
@@ -17,6 +18,12 @@ declare global {
       delete: (endpoint: string, urlParams?: any) => Promise<any>
       uploadFile: (endpoint: string, file: any, data?: any) => Promise<any>
       uploadFileProgress: (endpoint: string, files: any, params?: any, data?: any, onProgress?: any, method?: string) => Promise<any>
+    }
+    xml: {
+      preProcess: (xmlString: string) => Promise<QrParams | null>
+    }
+    validationApi: {
+      validateBulk: (bulkEntries: DataEntry[]) => Promise<ValidacionCfdiResponse>
     }
   }
 }

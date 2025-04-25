@@ -2,8 +2,8 @@ import axios, { AxiosProgressEvent, AxiosRequestConfig, AxiosResponse } from 'ax
 import { ApiErrorDetails, ApiResponse, LaravelException } from '../utils/Interfaces';
 
 export class ApiService {
-    environment = null;
-    token = null;
+    environment: any = null;
+    token: string | null = null;
 
     private constructor() {
         this.environment = {
@@ -71,7 +71,7 @@ export class ApiService {
             const response: AxiosResponse = await axios(config);
             return response.data;
         } catch (error) {
-            console.error('Error en la solicitud GET:', error);
+            // console.error('Error en la solicitud GET:', error);
             throw error;
         }
     }
@@ -93,7 +93,7 @@ export class ApiService {
             const response: AxiosResponse = await axios(config);
             return response.data;
         } catch (error) {
-            console.error('Error en la solicitud POST:', error);
+            // console.error('Error en la solicitud POST:', error);
             throw error;
         }
     }
@@ -115,7 +115,7 @@ export class ApiService {
             const response: AxiosResponse = await axios(config);
             return response.data;
         } catch (error) {
-            console.error('Error en la solicitud PUT:', error);
+            // console.error('Error en la solicitud PUT:', error);
             throw error;
         }
     }
@@ -136,7 +136,7 @@ export class ApiService {
             const response: AxiosResponse = await axios(config);
             return response.data;
         } catch (error) {
-            console.error('Error en la solicitud GET:', error);
+            // console.error('Error en la solicitud GET:', error);
             throw error;
         }
     }
@@ -176,7 +176,7 @@ export class ApiService {
             return response.data;
         }
         catch (error) {
-            console.error('Error al subir archivos:', error);
+            // console.error('Error al subir archivos:', error);
             throw error;
         }
     }
@@ -227,7 +227,7 @@ export class ApiService {
         if (onProgress) {
             config.onUploadProgress = (event: AxiosProgressEvent) => {
                 if (event.lengthComputable) {
-                    const percentCompleted = Math.round((event.loaded * 100) / event.total);
+                    const percentCompleted = Math.round((event.loaded * 100) / (event.total || 100));
                     onProgress(percentCompleted);
                 }
             };
@@ -238,7 +238,7 @@ export class ApiService {
             return response.data;
         }
         catch (error) {
-            console.error('Error al subir archivos:', error);
+            // console.error('Error al subir archivos:', error);
             throw error;
         }
     }

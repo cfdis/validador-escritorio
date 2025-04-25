@@ -1,4 +1,4 @@
-import { ToastType } from "./Types";
+import { QrParams, ToastType } from "./Types";
 
 export interface LaravelException {
     message: string;
@@ -48,4 +48,25 @@ export interface User {
     // empresas?: { [k: string]: Empresa };
     // roles?: Role[];
     email_verified_at: string | null;
+}
+
+export interface ValidacionCfdiResult {
+    CodigoEstatus: string;
+    EsCancelable: string;
+    Estado: string;
+    EstatusCancelacion: string;
+    ValidacionEFOS: string;
+    UltimaFechaConsulta: string; // ISO 8601, e.g. "2025-04-24T12:59:04"
+}
+
+export interface ValidacionCfdiResponseItem {
+    id: string;
+    resultado?: ValidacionCfdiResult;
+    error?: string;
+}
+
+export interface DataEntry {
+    file?: File;
+    qrData: QrParams | null;
+    result?: ValidacionCfdiResponseItem | null;
 }
