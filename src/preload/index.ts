@@ -31,6 +31,12 @@ const validationApi = {
   validateBulk: (bulkEntries: any[]) => ipcRenderer.invoke('validate:bulk', bulkEntries)
 }
 
+const dbApi = {
+  cfdi: {
+    getAll: () => ipcRenderer.invoke('db:cfdi:getAll')
+  }
+}
+
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
 // just add to the DOM global.
@@ -41,6 +47,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('api', api)
     contextBridge.exposeInMainWorld('xml', xmlApi)
     contextBridge.exposeInMainWorld('validationApi', validationApi)
+    contextBridge.exposeInMainWorld('db', dbApi)
   } catch (error) {
     console.error(error)
   }
@@ -55,4 +62,6 @@ if (process.contextIsolated) {
   window.xml = xmlApi
   // @ts-ignore (define in dts)
   window.validationApi = validationApi
+  // @ts-ignore (define in dts)
+  window.db = dbApi
 }

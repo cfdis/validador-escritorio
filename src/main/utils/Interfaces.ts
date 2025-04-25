@@ -34,3 +34,24 @@ export type QrParams = {
     fe: string;
     xml?: string;
 }
+
+export interface ValidacionCfdiResult {
+    CodigoEstatus: string;
+    EsCancelable: string;
+    Estado: string;
+    EstatusCancelacion: string;
+    ValidacionEFOS: string;
+    UltimaFechaConsulta: string;
+}
+
+export interface DataEntry {
+    file?: File;
+    qrData: QrParams | null;
+    result?: ValidacionCfdiResponseItem | null;
+}
+
+export interface ValidacionCfdiResponseItem {
+    id: string;
+    resultado?: ValidacionCfdiResult;
+    error?: string;
+}

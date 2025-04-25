@@ -1,0 +1,12 @@
+{
+    "extends": "./tsconfig.node.json",
+    "compilerOptions": {
+      "outDir": "out/migrations",
+      "rootDir": "src/main/db/migrations",
+      "module": "CommonJS",
+      "target": "ES2020",
+      "emitDeclarationOnly": false
+    },
+    "include": ["src/main/db/migrations/*.ts"]
+  }
+  

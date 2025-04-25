@@ -25,5 +25,10 @@ declare global {
     validationApi: {
       validateBulk: (bulkEntries: DataEntry[]) => Promise<ValidacionCfdiResponse>
     }
+    db: {
+      cfdi: {
+        getAll: () => Promise<any[]>
+      }
+    }
   }
 }

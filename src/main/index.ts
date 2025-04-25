@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -6,6 +6,8 @@ import { registerApiHandlers } from './ipc/apiHandlers'
 import { registerAuthHandlers } from './ipc/userHandlers'
 import { registerXmlHandlers } from './ipc/xmlHandlers'
 import { registerValidacionHandlers } from './ipc/validacionHandlers'
+import { migrateDatabase } from './db/migrator'
+import { registerDbHandlers } from './ipc/dbHandlers'
 
 function createWindow(): void {
   // Create the browser window.
@@ -57,11 +59,14 @@ app.whenReady().then(() => {
 
   createWindow()
 
+  migrateDatabase();
+
   // Registering IPC handlers
   registerApiHandlers();
   registerAuthHandlers();
   registerXmlHandlers();
   registerValidacionHandlers();
+  registerDbHandlers();
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
