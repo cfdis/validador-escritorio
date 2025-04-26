@@ -1,3 +1,4 @@
+import { QrParams } from "../utils/Interfaces";
 import { ApiService } from "./ApiService";
 
 export class ValidacionService {
@@ -5,8 +6,13 @@ export class ValidacionService {
         private api: ApiService
     ) { }
 
-    public async validarBulk(bulkData: Array<any>) {
+    public async validarBulk(bulkData: Array<QrParams>) {
         const response = await this.api.post('validarp', {}, bulkData);
+        return response;
+    }
+
+    public async validar(data: QrParams) {
+        const response = await this.api.post('validar', {}, data);
         return response;
     }
 }

@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { DataEntry } from '../utils/Interfaces';
 import { ToastService } from './ToastService';
 import { SpinnerService } from './SpinnerService';
-import { ValidacionCfdiResponse } from '../utils/Types';
+import { QrParams, ValidacionCfdiResponse } from '../utils/Types';
 import { FrontApi } from './FrontApi';
 
 export class ValidacionService extends FrontApi {
@@ -60,7 +60,7 @@ export class ValidacionService extends FrontApi {
         $('#' + tableContainerId).toggle(entries.length > 0);
     }
 
-    async validate(entries: DataEntry[]): Promise<ValidacionCfdiResponse | void> {
+    async validateBulk(entries: DataEntry[]): Promise<ValidacionCfdiResponse | void> {
         let validos = entries.filter(entry => entry.qrData !== null);
         if (validos.length === 0) {
             this.ts.warning('No hay CFDI(s) para validar', 'Ningún archivo contiene un CFDI válido.');
@@ -71,6 +71,19 @@ export class ValidacionService extends FrontApi {
 
         this.ss.show()
         const response = await this.validationApi.validateBulk(datos);
+        return this.handleResponse<ValidacionCfdiResponse>(response).finally(() => {
+            this.ss.hide();
+        });
+    }
+
+    async validate(entry: QrParams): Promise<ValidacionCfdiResponse | void> {
+        if (!entry) {
+            this.ts.warning('No hay CFDI para validar', 'Ningún archivo contiene un CFDI válido.');
+            return;
+        }
+
+        this.ss.show()
+        const response = await this.validationApi.validate(entry);
         return this.handleResponse<ValidacionCfdiResponse>(response).finally(() => {
             this.ss.hide();
         });
