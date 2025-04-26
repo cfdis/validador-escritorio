@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { QrParams } from '../main/utils/Interfaces'
 
 // Custom APIs for renderer
 const authApi = {
@@ -28,12 +29,15 @@ const xmlApi = {
 }
 
 const validationApi = {
-  validateBulk: (bulkEntries: any[]) => ipcRenderer.invoke('validate:bulk', bulkEntries)
+  validateBulk: (bulkEntries: QrParams[]) => ipcRenderer.invoke('validate:bulk', bulkEntries),
+  validate: (data: QrParams) => ipcRenderer.invoke('validate:single', data)
 }
 
 const dbApi = {
   cfdi: {
-    getAll: () => ipcRenderer.invoke('db:cfdi:getAll')
+    getAll: () => ipcRenderer.invoke('db:cfdi:getAll'),
+    delete: (id: number) => ipcRenderer.invoke('db:cfdi:delete', id),
+    deleteByUuid: (uuid: string) => ipcRenderer.invoke('db:cfdi:deleteByUuid', uuid)
   }
 }
 

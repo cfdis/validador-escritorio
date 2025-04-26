@@ -23,11 +23,14 @@ declare global {
       preProcess: (xmlString: string) => Promise<QrParams | null>
     }
     validationApi: {
-      validateBulk: (bulkEntries: DataEntry[]) => Promise<ValidacionCfdiResponse>
+      validateBulk: (bulkEntries: QrParams[]) => Promise<ValidacionCfdiResponse>
+      validate: (data: QrParams) => Promise<ValidacionCfdiResponse>
     }
     db: {
       cfdi: {
         getAll: () => Promise<any[]>
+        delete: (id: number) => Promise<void>
+        deleteByUuid: (uuid: string) => Promise<void>
       }
     }
   }

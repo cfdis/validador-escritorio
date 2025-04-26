@@ -17,6 +17,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         .addColumn('estatus_cancelacion_id', 'integer')
         .addColumn('es_cancelable_id', 'integer')
         .addColumn('detalle', 'json')
+        .addColumn('xml', 'text')
         .addColumn('ultima_validacion', 'datetime')
         .addColumn('created_at', 'text', (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`))
         .addColumn('updated_at', 'text', (col) => col.defaultTo(sql`CURRENT_TIMESTAMP`))

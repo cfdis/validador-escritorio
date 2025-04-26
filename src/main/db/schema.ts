@@ -57,9 +57,10 @@ export interface CfdiTable {
     estatus_cancelacion_id?: number;
     es_cancelable_id?: number;
     detalle?: JSONColumnType<ValidacionCfdiResult>;
+    xml?: string | null;
     ultima_validacion?: string;
     created_at?: ColumnType<Date, string>;
-    updated_at?: ColumnType<Date, string>;
+    updated_at?: ColumnType<Date, string, string>;
 }
 
 export type Cfdi = Selectable<CfdiTable>
