@@ -3,6 +3,30 @@
         <h3 class="text-lg font-semibold mb-2 text-center text-gray-800 dark:text-white">
             Historial de CFDIs validados
         </h3>
+        <div id="filtrosContainer" class="mb-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg shadow">
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <input type="text" id="filtroUuid" placeholder="UUID" class="input-filtro" />
+                <input type="text" id="filtroEmisor" placeholder="RFC Emisor" class="input-filtro" />
+                <input type="text" id="filtroReceptor" placeholder="RFC Receptor" class="input-filtro" />
+                <select id="filtroStatus" class="input-filtro">
+                    <option value="">Todos los estados</option>
+                    <option value="Vigente">Vigente</option>
+                    <option value="Cancelado">Cancelado</option>
+                    <option value="No encontrado">No encontrado</option>
+                </select>
+                <input type="date" id="filtroFechaDesde" class="input-filtro" />
+                <input type="date" id="filtroFechaHasta" class="input-filtro" />
+                <input type="number" id="filtroMontoMin" placeholder="Monto mínimo" class="input-filtro" />
+                <input type="number" id="filtroMontoMax" placeholder="Monto máximo" class="input-filtro" />
+            </div>
+
+            <div class="flex justify-end mt-4 space-x-2">
+                <button id="btnAplicarFiltros"
+                    class="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Aplicar Filtros</button>
+                <button id="btnGenerarReporte"
+                    class="btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Generar Reporte</button>
+            </div>
+        </div>
         <div class="overflow-x-auto rounded-lg border border-gray-300 dark:border-gray-600 shadow">
             <table class="min-w-full bg-white dark:bg-gray-800 text-gray-800 dark:text-white text-sm rounded-lg">
                 <thead class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">

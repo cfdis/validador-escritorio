@@ -7,6 +7,7 @@ import { ValidacionService } from '../services/ValidacionService';
 export class HistorialView implements View {
     private db: any;
     private cfdis: any[] = [];
+    private filteredCfdis: any[] = [];
     constructor(
         private ss: SpinnerService,
         private vs: ValidacionService
@@ -22,7 +23,8 @@ export class HistorialView implements View {
     private loadPage() {
         this.ss.show();
         this.db.cfdi.getAll().then((result: any) => {
-            this.renderTable(result);
+            this.cfdis = result;
+            this.renderTable(this.cfdis);
         }).catch((err: any) => {
             console.error('Error al cargar los CFDIs', err);
         }).finally(() => {
@@ -31,11 +33,10 @@ export class HistorialView implements View {
     }
 
     private renderTable(cfdis: any[]) {
-        this.cfdis = cfdis;
-
+        console.log('renderTable', cfdis);
         const tbody = $('#historialTableBody');
 
-        if (tbody.length === 0 || cfdis.length === 0) {
+        if (tbody.length === 0) {
             return;
         }
 
@@ -124,8 +125,87 @@ export class HistorialView implements View {
         }).catch((err) => {
             this.vs.handleError(err);
         });
-
     }
+
+    private aplicarFiltros() {
+        const uuid = ($('#filtroUuid').val() as string)?.trim().toUpperCase();
+        const emisor = ($('#filtroEmisor').val() as string)?.trim().toUpperCase();
+        const receptor = ($('#filtroReceptor').val() as string)?.trim().toUpperCase();
+        const status = ($('#filtroStatus').val() as string)?.trim();
+        const fechaDesdeStr = ($('#filtroFechaDesde').val() as string);
+        const fechaHastaStr = ($('#filtroFechaHasta').val() as string);
+        const fechaDesde = fechaDesdeStr ? new Date(fechaDesdeStr + 'T00:00:00') : null;
+        const fechaHasta = fechaHastaStr ? new Date(fechaHastaStr + 'T23:59:59') : null;
+        const montoMin = parseFloat($('#filtroMontoMin').val() as string) || null;
+        const montoMax = parseFloat($('#filtroMontoMax').val() as string) || null;
+
+        this.filteredCfdis = this.cfdis.filter(c => {
+            const cUuid = c.uuid?.toUpperCase() || '';
+            const cEmisor = c.emisor_rfc?.toUpperCase() || '';
+            const cReceptor = c.receptor_rfc?.toUpperCase() || '';
+            const cFecha = c.ultima_validacion ? new Date(c.ultima_validacion) : null;
+            const cTotal = c.total ?? 0;
+
+            return (!uuid || cUuid.includes(uuid)) &&
+                (!emisor || cEmisor.includes(emisor)) &&
+                (!receptor || cReceptor.includes(receptor)) &&
+                (!status || c.status === status) &&
+                (!fechaDesde || (cFecha && cFecha >= new Date(fechaDesde))) &&
+                (!fechaHasta || (cFecha && cFecha <= new Date(fechaHasta))) &&
+                (montoMin === null || cTotal >= montoMin) &&
+                (montoMax === null || cTotal <= montoMax);
+        });
+
+        this.renderTable(this.filteredCfdis);
+    }
+
+    private generarReporte() {
+        const name = `Reporte - ${new Date().toLocaleDateString()}`;
+        const filename = `${name}.csv`;
+
+        let data = this.filteredCfdis.length > 0 ? this.filteredCfdis : this.cfdis;
+
+        this.exportarCSV(data, filename);
+    }
+
+    private exportarCSV(data: any[], filename: string = 'reporte.csv') {
+        if (data.length === 0) {
+            alert('No hay datos para exportar.');
+            return;
+        }
+
+        const columnas: Record<string, string> = {
+            uuid: 'UUID',
+            emisor_rfc: 'RFC Emisor',
+            // emisor_name: 'Nombre Emisor',
+            receptor_rfc: 'RFC Receptor',
+            // receptor_name: 'Nombre Receptor',
+            total: 'Total',
+            status: 'Estatus',
+            cancelable: 'Es Cancelable',
+            cancel_status: 'Estatus Cancelación',
+        };
+
+        const campos = Object.keys(columnas);
+
+        const encabezados = campos.map(campo => columnas[campo]);
+        const filas = data.map(row => campos.map(campo => {
+            const valor = row[campo] ?? '';
+            return `"${String(valor).replace(/"/g, '""')}"`;
+        }).join(','));
+
+        const contenidoCsv = [encabezados.join(','), ...filas].join('\r\n');
+        const blob = new Blob([contenidoCsv], { type: 'text/csv;charset=utf-8;' });
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
 
     private bindEvents() {
         // Aquí puedes agregar los eventos que necesites para la vista de historial
@@ -138,6 +218,14 @@ export class HistorialView implements View {
             const id = $(event.currentTarget).data('id');
             this.revalidarCfdi(id);
         });
+
+        $('#btnAplicarFiltros').on('click', () => {
+            this.aplicarFiltros();
+        });
+
+        $('#btnGenerarReporte').on('click', () => {
+            this.generarReporte();
+        });
     }
 
     private unbindEvents() {
@@ -145,6 +233,8 @@ export class HistorialView implements View {
         // para evitar duplicados o problemas de rendimiento al cambiar de vista
         $('#historialTableBody').off('click', '.eliminar-btn');
         $('#historialTableBody').off('click', '.revalidar-btn');
+        $('#btnAplicarFiltros').off('click');
+        $('#btnGenerarReporte').off('click');
     }
 
     destroy(): void {
