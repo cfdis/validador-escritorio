@@ -23,9 +23,32 @@
         <img src="assets/img/logo.png" alt="Logo" class="h-12">
         <span>Validador CFDI</span>
       </div>
+
+      <div id="navDropdownContainer" class="relative hidden">
+        <button id="navDropdownButton"
+          class="flex items-center bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white px-4 py-2 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200">
+          Navegar
+          <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div id="navDropdownMenu"
+          class="absolute right-0 mt-2 w-48 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded shadow-lg hidden z-30">
+          <a id="scanFromCamera" class="btn block px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-600">Escanear desde
+            cámara</a>
+          <a id="scanFromImage" class="btn block px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-600">Cargar
+            imagen(es)</a>
+          <a id="scanFromPdf" class="btn block px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-600">Cargar PDF(s)</a>
+          <a id="scanFromXml" class="btn block px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-600">Cargar XML(s)</a>
+          <a id="reportesBtn" class="btn block px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-600">Generar reportes</a>
+          <a id="historialBtn" class="btn block px-4 py-2 hover:bg-gray-300 dark:hover:bg-gray-600">Histórico</a>
+        </div>
+      </div>
+
       <div class="flex items-center space-x-4">
         <select id="theme-select"
-          class="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white px-3 py-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200">
+          class="hidden bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white px-3 py-1 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors duration-200">
           <option value="light">Claro</option>
           <option value="dark">Oscuro</option>
           <option value="system">Sistema</option>

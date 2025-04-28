@@ -1,3 +1,4 @@
+import $ from "jquery";
 import { View } from "../interfaces/View";
 import { routes } from "../routes/Router";
 import { RouteDeps, Routes } from "../utils/Types";
@@ -75,6 +76,13 @@ export class RouterService {
             const html = await fetch(htmlPath).then((res) => res.text());
             container.innerHTML = html;
             this.currentView = viewName;
+
+            const viewsWithoutMenu = ['login', 'offline', '404', 'dashboard'];
+            if (!viewsWithoutMenu.includes(viewName)) {
+                $('#navDropdownContainer').show();
+            } else {
+                $('#navDropdownContainer').hide();
+            }
 
             const factory = this.routes[viewName];
             if (typeof factory === 'function') {

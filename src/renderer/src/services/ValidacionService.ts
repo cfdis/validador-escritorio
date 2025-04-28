@@ -120,7 +120,7 @@ export function renderQrTable(tableContainerId: string, entries: DataEntry[]) {
                         <td class="px-3 py-2" title="${item.result?.resultado?.EsCancelable || ''}">${item.result?.resultado?.EsCancelable || '-'}</td>
                         <td class="px-3 py-2" title="${item.result?.resultado?.EstatusCancelacion || ''}">${item.result?.resultado?.EstatusCancelacion || '-'}</td>
                         <td class="px-3 py-2">
-                            <button class="text-red-500 hover:text-red-700 font-semibold btn-remove" data-index="${index}">
+                            <button class="btn text-red-500 hover:text-red-700 font-semibold btn-remove" data-index="${index}">
                                 <i class="material-icons">delete</i>
                             </button>
                         </td>

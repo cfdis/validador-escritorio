@@ -52,6 +52,7 @@ export class HistorialView implements View {
 
             let statusIcon = '';
             let statusIconClass = '';
+            let hiddenClass = '';
             switch (cfdi.status) {
                 case 'Vigente':
                     statusIcon = 'check_circle';
@@ -60,6 +61,7 @@ export class HistorialView implements View {
                 case 'Cancelado':
                     statusIcon = 'cancel';
                     statusIconClass = 'text-orange-600';
+                    hiddenClass = 'hidden';
                     break;
                 case 'No encontrado':
                     statusIcon = 'error';
@@ -81,9 +83,9 @@ export class HistorialView implements View {
                 <td class="px-3 py-2"><i class="material-icons ${statusIconClass}">${statusIcon}</i> &nbsp ${cfdi.status}</td>
                 <td class="px-3 py-2">${cfdi.cancelable}</td>
                 <td class="px-3 py-2">${cfdi.cancel_status || '-'}</td>
-                <td class="px-3 py-2 space-x-2 text-center">
-                    <button class="revalidar-btn btn bg-yellow-600 hover:bg-yellow-700 text-xs px-2 py-1 rounded" data-id="${cfdi.id}" title="Revalidar"><i class="material-icons">sync</i></button>
-                    <button class="eliminar-btn btn bg-red-600 hover:bg-red-700 text-xs px-2 py-1 rounded" data-id="${cfdi.id}" title="Eliminar"><i class="material-icons">delete</i></button>
+                <td class="px-3 py-2 space-x-2 text-left">
+                    <button class="eliminar-btn btn text-red-600 hover:text-red-700 text-xs px-2 py-1 rounded" data-id="${cfdi.id}" title="Eliminar"><i class="material-icons">delete</i></button>
+                    <button class="revalidar-btn btn text-yellow-600 hover:text-yellow-700 text-xs px-2 py-1 rounded ${hiddenClass}" data-id="${cfdi.id}" title="Revalidar"><i class="material-icons">sync</i></button>
                 </td>
             </tr>
             `;

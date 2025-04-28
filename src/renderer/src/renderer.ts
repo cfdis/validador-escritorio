@@ -22,6 +22,13 @@ function init(): void {
     const themeManager = new ThemeManager();
     themeManager.initThemeSelector();
 
+    $(document).on('click', '#scanFromCamera', () => deps.rs.navigate('camera'));
+    $(document).on('click', '#scanFromImage', () => deps.rs.navigate('scanFile', { type: 'image' }));
+    $(document).on('click', '#scanFromPdf', () => deps.rs.navigate('scanFile', { type: 'pdf' }));
+    $(document).on('click', '#scanFromXml', () => deps.rs.navigate('scanFile', { type: 'xml' }));
+    // $('#reportesBtn').on('click', () => deps.rs.navigate('reportes'));
+    $(document).on('click', '#historialBtn', () => deps.rs.navigate('historial'));
+
     // AppContext.getInstance().router().start()
 
     $(document).on('click', '.btn-home, #retryConection', function (e) {
@@ -40,6 +47,13 @@ function init(): void {
     $(document).on('click', (e) => {
       if (!$(e.target).closest('#userMenu').length) {
         $('#userDropdown').hide();
+      }
+    });
+
+    $('#navDropdownButton').on('click', () => toggleNavigator());
+    $(document).on('click', (e) => {
+      if (!$(e.target).closest('#navDropdownButton').length) {
+        $('#navDropdownMenu').hide();
       }
     });
   })
@@ -78,6 +92,11 @@ function initFooter(): void {
 function toggleMenu() {
   const menu = $('#userDropdown');
   menu.toggle();
+}
+
+function toggleNavigator() {
+  const navigator = $('#navDropdownMenu');
+  navigator.toggle();
 }
 
 function logout(e) {

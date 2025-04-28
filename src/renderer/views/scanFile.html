@@ -1,4 +1,4 @@
-<div class="flex flex-col items-center justify-center h-full space-y-4 text-white">
+<div class="flex flex-col items-center justify-center h-full space-y-4 text-gray-800 dark:text-white">
     <h2 class="text-xl font-semibold" id="uploadTitle">Escanear QR</h2>
 
     <input type="file" id="fileInput" accept="application/pdf" multiple
@@ -7,13 +7,13 @@
     <div id="qrResultContainer" class="w-full mt-6 hidden">
         <h3 class="text-lg font-semibold mb-2 text-center">CFDIs escaneados</h3>
 
-        <div class="overflow-x-auto rounded-lg border border-gray-600 shadow">
-            <table class="min-w-full bg-gray-800 text-white text-sm rounded-lg">
-                <thead class="bg-gray-700 text-gray-300">
+        <div class="overflow-x-auto rounded-lg border border-gray-300 dark:border-gray-600 shadow">
+            <table class="min-w-full bg-white dark:bg-gray-800 text-gray-800 dark:text-white text-sm rounded-lg">
+                <thead class="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300">
                     <tr>
-                        <th class="px-3 py-2 text-left text-center align-middle" colspan="5">Consulta</th>
-                        <th class="px-3 py-2 text-left text-center align-middle" colspan="3">Resultado</th>
-                        <th class="px-3 py-2 text-left text-center align-middle" rowspan="2">Acciones</th>
+                        <th class="px-3 py-2 text-center align-middle" colspan="5">Consulta</th>
+                        <th class="px-3 py-2 text-center align-middle" colspan="3">Resultado</th>
+                        <th class="px-3 py-2 text-center align-middle" rowspan="2">Acciones</th>
                     </tr>
                     <tr>
                         <th class="px-3 py-2 text-left">Archivo</th>
@@ -32,7 +32,7 @@
 
         <div class="text-center mt-4">
             <button id="validateQrBtn"
-                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium transition">
+                class="btn px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium transition">
                 Validar
             </button>
         </div>

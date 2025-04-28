@@ -31,7 +31,7 @@ export class QrScanCameraView implements View {
             const videoDevices = devices.filter(d => d.kind === 'videoinput');
             videoDevices.forEach(device => {
                 this.cameraSelect.append(
-                    $('<option>').val(device.deviceId).text(device.label || `Cámara ${this.cameraSelect.children().length}`)
+                    $('<option class="btn">').val(device.deviceId).text(device.label || `Cámara ${this.cameraSelect.children().length}`)
                 );
             });
         });
