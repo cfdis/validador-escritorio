@@ -4,7 +4,7 @@ import { ApiService } from "../services/ApiService";
 export function registerApiHandlers() {
     const apiService = ApiService.getInstance();;
 
-    ipcMain.handle('api:get', async (event, { endpoint, params = {} }) => {
+    ipcMain.handle('api:get', async (_, { endpoint, params = {} }) => {
         try {
             const result = await apiService.get(endpoint, params);
             return apiService.getResponse(result);
@@ -13,7 +13,7 @@ export function registerApiHandlers() {
         }
     });
 
-    ipcMain.handle('api:post', async (event, { endpoint, params = {}, data = {}, useAuth = true }) => {
+    ipcMain.handle('api:post', async (_, { endpoint, params = {}, data = {}, useAuth = true }) => {
         try {
             const result = await apiService.post(endpoint, params, data, useAuth);
             return apiService.getResponse(result);
@@ -22,7 +22,7 @@ export function registerApiHandlers() {
         }
     });
 
-    ipcMain.handle('api:put', async (event, { endpoint, params = {}, data = {} }) => {
+    ipcMain.handle('api:put', async (_, { endpoint, params = {}, data = {} }) => {
         try {
             const result = await apiService.put(endpoint, params, data);
             return apiService.getResponse(result);
@@ -31,7 +31,7 @@ export function registerApiHandlers() {
         }
     });
 
-    ipcMain.handle('api:delete', async (event, { endpoint, params = {} }) => {
+    ipcMain.handle('api:delete', async (_, { endpoint, params = {} }) => {
         try {
             const result = await apiService.delete(endpoint, params);
             return apiService.getResponse(result);
@@ -40,7 +40,7 @@ export function registerApiHandlers() {
         }
     });
 
-    ipcMain.handle('api:uploadFile', async (event, { endpoint, file, params = {}, data = {} }) => {
+    ipcMain.handle('api:uploadFile', async (_, { endpoint, file, params = {}, data = {} }) => {
         try {
             const result = await apiService.uploadFile(endpoint, file, params, data);
             return apiService.getResponse(result);
@@ -49,7 +49,7 @@ export function registerApiHandlers() {
         }
     });
 
-    ipcMain.handle('api:uploadFileProgress', async (event, { endpoint, files, params = {}, data = {}, onProgress = null, method = null }) => {
+    ipcMain.handle('api:uploadFileProgress', async (_, { endpoint, files, params = {}, data = {}, onProgress = null, method = null }) => {
         try {
             const result = await apiService.uploadFileProgress(endpoint, files, params, data, onProgress, method);
             return apiService.getResponse(result);

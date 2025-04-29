@@ -66,11 +66,11 @@ export class RouterService {
                 this.currentInstance.destroy();
             }
 
-            let htmlPath = `/views/${viewName}.html`; // Debes asegurarte que views/ esté en public/
+            let htmlPath = `views/${viewName}.html`;
 
             const response = await fetch(htmlPath);
             if (!response.ok) {
-                htmlPath = `/views/404.html`; // Cambia a la vista de error 404 si no se encuentra la vista
+                htmlPath = `views/404.html`; // Cambia a la vista de error 404 si no se encuentra la vista
             }
 
             const html = await fetch(htmlPath).then((res) => res.text());

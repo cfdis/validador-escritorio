@@ -1,5 +1,6 @@
 import axios, { AxiosProgressEvent, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ApiErrorDetails, ApiResponse, LaravelException } from '../utils/Interfaces';
+import { is } from '@electron-toolkit/utils';
 
 export class ApiService {
     environment: any = null;
@@ -7,8 +8,7 @@ export class ApiService {
 
     private constructor() {
         this.environment = {
-            apiUrl: 'http://localhost:8080/validador/' // Cambia esto a la URL de tu API
-            // apiUrl: 'https://facturabilidad.com/' // Cambia esto a la URL de tu API
+            apiUrl: is.dev ? 'http://localhost:8080/validador/' : 'https://facturabilidad.com/validador/'
         };
     }
 

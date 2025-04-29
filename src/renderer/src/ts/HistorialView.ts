@@ -33,7 +33,6 @@ export class HistorialView implements View {
     }
 
     private renderTable(cfdis: any[]) {
-        console.log('renderTable', cfdis);
         const tbody = $('#historialTableBody');
 
         if (tbody.length === 0) {
@@ -85,8 +84,8 @@ export class HistorialView implements View {
                 <td class="px-3 py-2">${cfdi.cancelable}</td>
                 <td class="px-3 py-2">${cfdi.cancel_status || '-'}</td>
                 <td class="px-3 py-2 space-x-2 text-left">
-                    <button class="eliminar-btn btn text-red-600 hover:text-red-700 text-xs px-2 py-1 rounded" data-id="${cfdi.id}" title="Eliminar"><i class="material-icons">delete</i></button>
-                    <button class="revalidar-btn btn text-yellow-600 hover:text-yellow-700 text-xs px-2 py-1 rounded ${hiddenClass}" data-id="${cfdi.id}" title="Revalidar"><i class="material-icons">sync</i></button>
+                    <button class="eliminar-btn btn text-red-500 hover:text-red-700 text-xs px-2 py-1 rounded" data-id="${cfdi.id}" title="Eliminar"><i class="material-icons">delete</i></button>
+                    <button class="revalidar-btn btn text-yellow-500 hover:text-yellow-700 text-xs px-2 py-1 rounded ${hiddenClass}" data-id="${cfdi.id}" title="Revalidar"><i class="material-icons">sync</i></button>
                 </td>
             </tr>
             `;

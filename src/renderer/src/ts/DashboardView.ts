@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import { RouterService } from '../services/RouterService';
 import { View } from '../interfaces/View';
-import { ToastService } from '../services/ToastService';
 
 export class DashboardView implements View {
     constructor(

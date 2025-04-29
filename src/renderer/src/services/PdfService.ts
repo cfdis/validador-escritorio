@@ -1,9 +1,11 @@
-import { getDocument, GlobalWorkerOptions, version } from 'pdfjs-dist';
+import { getDocument, GlobalWorkerOptions } from 'pdfjs-dist';
 import { PDFDocumentProxy } from 'pdfjs-dist/types/src/display/api';
 
 export class PdfService {
     constructor() {
-        const pdfWorkerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${version}/build/pdf.worker.min.mjs`;
+        // const pdfWorkerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${version}/build/pdf.worker.min.mjs`;
+        // GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
+        const pdfWorkerSrc = './assets/pdf.worker.min.mjs';
         GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
     }
 

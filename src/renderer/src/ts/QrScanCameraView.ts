@@ -113,7 +113,7 @@ export class QrScanCameraView implements View {
         this.vs.renderTable('cameraQrResultContainer', this.entries);
     }
 
-    private onerror(error: any): void {
+    private onerror(_: any): void {
         // console.error('QR Code error:', error);
     }
 

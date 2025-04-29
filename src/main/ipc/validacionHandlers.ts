@@ -8,7 +8,7 @@ export function registerValidacionHandlers() {
     const apiService = ApiService.getInstance();
     const validacionService = new ValidacionService(apiService);
 
-    ipcMain.handle('validate:bulk', async (event, data: QrParams[]) => {
+    ipcMain.handle('validate:bulk', async (_, data: QrParams[]) => {
         try {
             const result = await validacionService.validarBulk(data);
 
@@ -33,7 +33,7 @@ export function registerValidacionHandlers() {
         }
     });
 
-    ipcMain.handle('validate:single', async (event, data: QrParams) => {
+    ipcMain.handle('validate:single', async (_, data: QrParams) => {
         try {
             const result = await validacionService.validar(data);
 

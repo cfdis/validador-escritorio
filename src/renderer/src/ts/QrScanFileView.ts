@@ -45,6 +45,7 @@ export class QrScanFileView implements View {
     }
 
     private async procesarArchivos(files: File[]) {
+        this.ss.show();
         for (const file of files) {
             // si el archivo ya existe, no lo agregamos
             const sameFile = this.entries.some(entry => entry.file?.name === file.name && entry.file.size === file.size);
@@ -81,6 +82,8 @@ export class QrScanFileView implements View {
             this.entries.push(DataEntry);
         }
         this.vs.renderTable('qrResultContainer', this.entries);
+        
+        this.ss.hide();
     }
 
     private scanFromXml(file: File): Promise<QrParams | null> {
@@ -97,7 +100,6 @@ export class QrScanFileView implements View {
 
     private bindEvents(): void {
         $('#fileInput').on('change', async (e) => {
-            this.ss.show();
             const input = e.target as HTMLInputElement;
 
             if (!input.files || input.files.length === 0) return;
@@ -107,7 +109,6 @@ export class QrScanFileView implements View {
             this.procesarArchivos(files);
 
             input.value = '';
-            this.ss.hide();
         });
 
         $(document).on('click', '.btn-remove', (e) => {
