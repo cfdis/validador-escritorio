@@ -4,7 +4,7 @@
   "description": "Validador cfdi",
   "main": "./out/main/index.js",
   "author": "Eduardo Islas",
-  "homepage": "https://facturabilidad.com",
+  "homepage": "https://facturabilidad.com/validador",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",

@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -8,6 +8,7 @@ import { registerXmlHandlers } from './ipc/xmlHandlers'
 import { registerValidacionHandlers } from './ipc/validacionHandlers'
 import { migrateDatabase } from './db/migrator'
 import { registerDbHandlers } from './ipc/dbHandlers'
+import { autoUpdater } from 'electron-updater';
 
 function createWindow(): void {
   // Create the browser window.
@@ -57,6 +58,8 @@ app.whenReady().then(() => {
 
   createWindow()
 
+  autoUpdater.checkForUpdatesAndNotify();
+
   migrateDatabase();
 
   // Registering IPC handlers
@@ -72,6 +75,19 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
+
+autoUpdater.on('update-downloaded', async (_info) => {
+  const result = await dialog.showMessageBox({
+    type: 'info',
+    title: 'Actualización disponible',
+    message: 'Se ha descargado una nueva versión. ¿Quieres reiniciar y actualizar ahora?',
+    buttons: ['Sí', 'Más tarde'],
+  });
+
+  if (result.response === 0) { // 0 = primer botón ("Sí")
+    autoUpdater.quitAndInstall(); // 🔥 Cierra y actualiza
+  }
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
