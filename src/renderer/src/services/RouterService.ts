@@ -16,6 +16,9 @@ export class RouterService {
     private deps: RouteDeps | null = null;
     private isInitialized = false;
 
+    private isLoggedIn = false;
+    private user: any = null;
+
     constructor(
         containerId = 'app'
     ) {
@@ -40,11 +43,19 @@ export class RouterService {
         }
 
         try {
-            const isLoggedIn = await this.userService!.checkLogin();
+            this.isLoggedIn = await this.userService!.checkLogin();
 
-            if (isLoggedIn) {
+            if (this.isLoggedIn) {
+                this.user = await this.userService!.getUser();
+                const proViews = ['scanFile'];
+
+                if (!this.user.suscripciones_validador.length && proViews.includes(viewName)) {
+                    viewName = 'suscripcion';
+                }
+
                 await this._loadView(viewName, params);
             } else {
+                this.user = null;
                 await this._loadView('login');
             }
         } catch (err: any) {
@@ -79,12 +90,14 @@ export class RouterService {
             this.currentView = viewName;
 
             const viewsWithoutMenu = ['login', 'offline', '404', 'dashboard'];
-            
+
             if (!viewsWithoutMenu.includes(viewName)) {
                 $('#navDropdownContainer').show();
             } else {
                 $('#navDropdownContainer').hide();
             }
+
+            $('.pro-tag').toggle(!this.user?.suscripciones_validador.length);
 
             const factory = this.routes[viewName];
             if (typeof factory === 'function') {

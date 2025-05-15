@@ -45,7 +45,7 @@ export class SuscripcionView implements View {
             this.us.handleError(error);
         }).finally(() => {
             this.ss.hide();
-        });;
+        });
     }
 
     renderSuscripciones(): void {
