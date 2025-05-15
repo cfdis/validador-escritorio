@@ -8,19 +8,16 @@ export function registerValidacionHandlers() {
     const apiService = ApiService.getInstance();
     const validacionService = new ValidacionService(apiService);
 
-    ipcMain.handle('validate:bulk', async (_, data: QrParams[]) => {
+    ipcMain.handle('validate:bulk', async (_, data: DataEntry[]) => {
         try {
             const result = await validacionService.validarBulk(data);
 
-            await result.forEach(async (item: ValidacionCfdiResponseItem) => {
-                const params = data.find((qrD: QrParams) => qrD.id === item.id);
-                const resultado: ValidacionCfdiResponseItem = result.find((res: ValidacionCfdiResponseItem) => res.id === item.id);
+            await result.data.forEach(async (item: ValidacionCfdiResponseItem) => {
+                let entry = data.find((obj: DataEntry) => obj.qrData?.id === item.id);
+                const resultado: ValidacionCfdiResponseItem = result.data.find((res: ValidacionCfdiResponseItem) => res.id === item.id);
 
-                if (params && resultado) {
-                    const entry: DataEntry = {
-                        qrData: params,
-                        result: resultado,
-                    };
+                if (entry && resultado) {
+                    entry.result = resultado;
 
                     guardarOActualizarCfdi(entry);
                 }

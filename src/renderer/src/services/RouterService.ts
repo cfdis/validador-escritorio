@@ -4,6 +4,7 @@ import { routes } from "../routes/Router";
 import { RouteDeps, Routes } from "../utils/Types";
 import { FrontApiService } from "./FrontApiService";
 import { FrontUserService } from "./FrontUserService";
+// import { ApiErrorDetails, User } from "../utils/Interfaces";
 
 export class RouterService {
     private containerId: string;
@@ -78,11 +79,18 @@ export class RouterService {
             this.currentView = viewName;
 
             const viewsWithoutMenu = ['login', 'offline', '404', 'dashboard'];
+            // const viewsWithoutUserMenu = ['login', 'offline', '404'];
             if (!viewsWithoutMenu.includes(viewName)) {
                 $('#navDropdownContainer').show();
             } else {
                 $('#navDropdownContainer').hide();
             }
+
+            // if (!viewsWithoutUserMenu.includes(viewName)) {
+            //     this.loadUser();
+            // } else {
+            //     $('#userMenu').hide();
+            // }
 
             const factory = this.routes[viewName];
             if (typeof factory === 'function') {
@@ -95,6 +103,19 @@ export class RouterService {
             container.innerHTML = `<p>Error al cargar vista: ${viewName}</p>`;
         }
     }
+
+    // private loadUser() {
+    //     this.userService!.getUser().then((user: User) => {
+    //         if (user && !$('#userMenu').is(':visible')) {
+    //             $('#userName').text(user.name || 'Usuario');
+    //             $('#userEmail').text(user.email || '');
+    //             $('#userAvatar').attr('src', user.avatar || 'assets/img/default-user.jpg');
+    //             $('#userMenu').show();
+    //         }
+    //     }).catch((error: ApiErrorDetails) => {
+    //         this.userService!.handleError(error);
+    //     });
+    // }
 
     getCurrentView() {
         return this.currentView;

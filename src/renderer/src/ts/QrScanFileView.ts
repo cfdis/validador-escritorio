@@ -122,12 +122,17 @@ export class QrScanFileView implements View {
         $('#validateQrBtn').on('click', () => {
             this.vs.validateBulk(this.entries).then((response: ValidacionCfdiResponse | void) => {
                 if (response) {
-                    response.forEach(element => {
+                    response.data.forEach(element => {
                         const index = this.entries.findIndex(entry => entry.qrData?.id === element.id);
                         if (index !== -1) {
                             this.entries[index].result = element;
                         }
                     });
+
+                    if (!response.success) {
+                        this.ts.warning('Alerta', response.message);
+                    }
+
                     this.vs.renderTable('qrResultContainer', this.entries);
                 }
             }).catch((err) => {

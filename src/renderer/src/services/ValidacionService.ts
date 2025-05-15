@@ -20,7 +20,7 @@ export class ValidacionService extends FrontApi {
     renderTable(tableContainerId: string, entries: DataEntry[]) {
         const tbody = $('#' + tableContainerId).find('tbody');
 
-        if (tbody.length === 0 || entries.length === 0) {
+        if (tbody.length === 0) {
             return;
         }
 
@@ -39,13 +39,24 @@ export class ValidacionService extends FrontApi {
                         `;
             }
 
+            let dataResult = ' <td colspan="3" class="px-3 py-2"> - </td>';
+            if (item.result?.resultado) {
+                dataResult = `
+                            <td class="px-3 py-2" title="${item.result.resultado.Estado || ''}">${item.result.resultado.Estado || '-'}</td>
+                            <td class="px-3 py-2" title="${item.result.resultado.EsCancelable || ''}">${item.result.resultado.EsCancelable || '-'}</td>
+                            <td class="px-3 py-2" title="${item.result.resultado.EstatusCancelacion || ''}">${item.result.resultado.EstatusCancelacion || '-'}</td>
+                        `;
+            } else if (item.result?.error) {
+                dataResult = `
+                            <td colspan="3" class="px-3 py-2 text-orange-600"> ${item.result.error} </td>
+                        `;
+            }
+
             const row = $(`
                         <tr class="border-b border-gray-600">
                             <td class="px-3 py-2" title="${item.file?.name || 'Cámara'}">${item.file?.name || 'Cámara'}</td>
                             ${data}
-                            <td class="px-3 py-2" title="${item.result?.resultado?.Estado || ''}">${item.result?.resultado?.Estado || '-'}</td>
-                            <td class="px-3 py-2" title="${item.result?.resultado?.EsCancelable || ''}">${item.result?.resultado?.EsCancelable || '-'}</td>
-                            <td class="px-3 py-2" title="${item.result?.resultado?.EstatusCancelacion || ''}">${item.result?.resultado?.EstatusCancelacion || '-'}</td>
+                            ${dataResult}
                             <td class="px-3 py-2">
                                 <button class="text-red-500 hover:text-red-700 font-semibold btn-remove" data-index="${index}">
                                     <i class="material-icons">delete</i>
@@ -67,10 +78,10 @@ export class ValidacionService extends FrontApi {
             return;
         }
 
-        const datos = validos.map(entry => entry.qrData);
+        // const datos = validos.map(entry => entry.qrData);
 
         this.ss.show()
-        const response = await this.validationApi.validateBulk(datos);
+        const response = await this.validationApi.validateBulk(validos);
         return this.handleResponse<ValidacionCfdiResponse>(response).finally(() => {
             this.ss.hide();
         });

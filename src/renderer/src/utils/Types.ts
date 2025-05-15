@@ -30,4 +30,8 @@ export type QrParams = {
     xml?: string;
 }
 
-export type ValidacionCfdiResponse = ValidacionCfdiResponseItem[];
+export type ValidacionCfdiResponse = {
+    data: ValidacionCfdiResponseItem[];
+    message: string;
+    success: boolean;
+};

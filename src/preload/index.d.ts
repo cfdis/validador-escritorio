@@ -9,7 +9,7 @@ declare global {
       login: (username: string, password: string) => Promise<ApiResponse<void | ApiErrorDetails>>
       logout: () => Promise<void | ApiErrorDetails>
       getUser: () => Promise<any | ApiErrorDetails>
-      checkLogin: (empresaId?: number) => Promise<boolean | ApiErrorDetails>
+      checkLogin: (empresaId?: number) => Promise<ApiResponse<boolean | ApiErrorDetails>>
     }
     api: {
       get: (endpoint: string, urlParams?: any) => Promise<any>

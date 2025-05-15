@@ -76,12 +76,21 @@ export class QrScanCameraView implements View {
         $('#validateQrBtn').on('click', () => {
             this.vs.validateBulk(this.entries).then((response: ValidacionCfdiResponse | void) => {
                 if (response) {
-                    response.forEach(element => {
+                    response.data.forEach(element => {
                         const index = this.entries.findIndex(entry => entry.qrData?.id === element.id);
                         if (index !== -1) {
                             this.entries[index].result = element;
                         }
                     });
+
+                    if (!response.success) {
+                        let extraMessage = '';
+                        response.data.filter(item => item.error !== undefined).forEach((item) => {
+                            extraMessage += `<br>${item.id} -> ${item.error}`;
+                        }
+                        );
+                        this.ts.warning('Alerta', response.message + extraMessage);
+                    }
 
                     this.vs.renderTable('cameraQrResultContainer', this.entries);
                 }

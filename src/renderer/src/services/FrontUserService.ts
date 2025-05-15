@@ -1,4 +1,5 @@
-import { User } from "../utils/Interfaces";
+import $ from "jquery";
+import { ApiErrorDetails, User } from "../utils/Interfaces";
 import { FrontApi } from "./FrontApi";
 import { ToastService } from "./ToastService";
 
@@ -36,6 +37,25 @@ export class FrontUserService extends FrontApi {
 
     async checkLogin(empresaId?: number) {
         const response = await this.auth.checkLogin(empresaId);
+
+        if (response.data && response.data === true) {
+            await this.loadUser();
+        } else {
+            $('#userMenu').hide();
+        }
         return this.handleResponse<boolean>(response);
+    }
+
+    private async loadUser() {
+        this.getUser().then((user: User) => {
+            if (user && !$('#userMenu').is(':visible')) {
+                $('#userName').text(user.name || 'Usuario');
+                $('#userEmail').text(user.email || '');
+                $('#userAvatar').attr('src', user.avatar || 'assets/img/default-user.jpg');
+                $('#userMenu').show();
+            }
+        }).catch((error: ApiErrorDetails) => {
+            this.handleError(error);
+        });
     }
 }

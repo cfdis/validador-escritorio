@@ -4,7 +4,7 @@ import { View } from '../interfaces/View';
 import { SpinnerService } from '../services/SpinnerService';
 import { FrontUserService } from '../services/FrontUserService';
 import { ToastService } from '../services/ToastService';
-import { ApiErrorDetails, User } from '../utils/Interfaces';
+import { ApiErrorDetails } from '../utils/Interfaces';
 
 export class LoginView implements View {
     constructor(
@@ -39,7 +39,6 @@ export class LoginView implements View {
         this.us.login(email, password).then(() => {
             this.rs.navigate('dashboard').then(() => {
                 this.ss.hide();
-                this.loadUser();
             });
         }).catch((error: ApiErrorDetails) => {
             if (error.status === 401 || error.status === 422) {
@@ -48,19 +47,6 @@ export class LoginView implements View {
             }
             this.us.handleError(error);
         }).finally(() => { this.ss.hide() });
-    }
-
-    private loadUser() {
-        this.us.getUser().then((user: User) => {
-            if (user) {
-                $('#userName').text(user.name || 'Usuario');
-                $('#userEmail').text(user.email || '');
-                $('#userAvatar').attr('src', user.avatar || 'assets/img/default-user.jpg');
-                $('#userMenu').show();
-            }
-        }).catch((error: ApiErrorDetails) => {
-            this.us.handleError(error);
-        });
     }
 
     destroy(): void {

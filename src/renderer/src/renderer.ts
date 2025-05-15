@@ -50,12 +50,29 @@ function init(): void {
       }
     });
 
-    $('#navDropdownButton').on('click', () => toggleNavigator());
+    // $('#navDropdownButton').on('click', () => toggleNavigator());
+    // $(document).on('click', (e) => {
+    //   if (!$(e.target).closest('#navDropdownButton').length) {
+    //     $('#navDropdownMenu').hide();
+    //   }
+    // });
+
+    $('#hamburgerButton').on('click', () => {
+      $('#mainNav').toggleClass('hidden');
+    });
+
     $(document).on('click', (e) => {
-      if (!$(e.target).closest('#navDropdownButton').length) {
-        $('#navDropdownMenu').hide();
+      if (window.innerWidth < 768 &&
+        !$(e.target).closest('#hamburgerButton').length &&
+        !$(e.target).closest('#mainNav').length
+      ) {
+        $('#mainNav').addClass('hidden');
       }
     });
+
+    $(window).on('resize', handleResize);
+
+    handleResize();
   })
 }
 
@@ -94,10 +111,18 @@ function toggleMenu() {
   menu.toggle();
 }
 
-function toggleNavigator() {
-  const navigator = $('#navDropdownMenu');
-  navigator.toggle();
+function handleResize() {
+  if (window.innerWidth >= 768) { // md breakpoint en Tailwind
+    $('#mainNav').removeClass('hidden');
+  } else {
+    $('#mainNav').addClass('hidden');
+  }
 }
+
+// function toggleNavigator() {
+//   const navigator = $('#navDropdownMenu');
+//   navigator.toggle();
+// }
 
 function logout(e) {
   e.preventDefault();
