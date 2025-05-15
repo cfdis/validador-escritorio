@@ -30,23 +30,4 @@ export function registerValidacionHandlers() {
         }
     });
 
-    ipcMain.handle('validate:single', async (_, data: QrParams) => {
-        try {
-            const result = await validacionService.validar(data);
-
-            if (result) {
-                const entry: DataEntry = {
-                    qrData: data,
-                    result: result,
-                };
-
-                guardarOActualizarCfdi(entry);
-            }
-
-            return apiService.getResponse(result);
-        } catch (error: any) {
-            return apiService.getErrorResponse(error);
-        }
-    });
-
 }

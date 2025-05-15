@@ -30,8 +30,7 @@ const xmlApi = {
 }
 
 const validationApi = {
-  validateBulk: (bulkEntries: QrParams[]) => ipcRenderer.invoke('validate:bulk', bulkEntries),
-  validate: (data: QrParams) => ipcRenderer.invoke('validate:single', data)
+  validateBulk: (bulkEntries: QrParams[]) => ipcRenderer.invoke('validate:bulk', bulkEntries)
 }
 
 const dbApi = {

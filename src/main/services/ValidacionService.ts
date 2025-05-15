@@ -10,12 +10,7 @@ export class ValidacionService {
         const fromFile = bulkData.some(entry => entry.file !== undefined && entry.file !== null);
 
         let data = bulkData.map(entry => entry.qrData);
-        const response = await this.api.post('validarp', { from_file: fromFile ? 1 : 0 }, data);
-        return response;
-    }
-
-    public async validar(data: QrParams) {
-        const response = await this.api.post('validar', {}, data);
+        const response = await this.api.post('validar-bulk', { from_file: fromFile ? 1 : 0 }, data);
         return response;
     }
 }

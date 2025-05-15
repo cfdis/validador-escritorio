@@ -1,8 +1,10 @@
 import $ from 'jquery';
 import { View } from '../interfaces/View';
-import { QrParams } from '../utils/Types';
+import { QrParams, ValidacionCfdiResponse } from '../utils/Types';
 import { SpinnerService } from '../services/SpinnerService';
 import { ValidacionService } from '../services/ValidacionService';
+import { DataEntry } from '../utils/Interfaces';
+import { ToastService } from '../services/ToastService';
 
 export class HistorialView implements View {
     private db: any;
@@ -10,7 +12,8 @@ export class HistorialView implements View {
     private filteredCfdis: any[] = [];
     constructor(
         private ss: SpinnerService,
-        private vs: ValidacionService
+        private vs: ValidacionService,
+        private ts: ToastService
     ) {
         this.db = window.db;
     }
@@ -119,8 +122,25 @@ export class HistorialView implements View {
             fe: cfdi.fe,
         };
 
-        this.vs.validate(params).then(() => {
-            this.loadPage();
+        // this.vs.validate(params).then(() => {
+        //     this.loadPage();
+        // }).catch((err) => {
+        //     this.vs.handleError(err);
+        // });
+
+        let entry: DataEntry = {
+            qrData: params,
+        }
+
+        this.vs.validateBulk([entry]).then((response: ValidacionCfdiResponse | void) => {
+            if (response) {
+                if (!response.success) {
+                    this.ts.warning('Alerta', response.message + '<br>' + response.data[0]?.id + '<br>' + response.data[0]?.error);
+                    return;
+                }
+
+                this.loadPage();
+            }
         }).catch((err) => {
             this.vs.handleError(err);
         });

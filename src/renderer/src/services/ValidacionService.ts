@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { DataEntry } from '../utils/Interfaces';
 import { ToastService } from './ToastService';
 import { SpinnerService } from './SpinnerService';
-import { QrParams, ValidacionCfdiResponse } from '../utils/Types';
+import { ValidacionCfdiResponse } from '../utils/Types';
 import { FrontApi } from './FrontApi';
 
 export class ValidacionService extends FrontApi {
@@ -82,19 +82,6 @@ export class ValidacionService extends FrontApi {
 
         this.ss.show()
         const response = await this.validationApi.validateBulk(validos);
-        return this.handleResponse<ValidacionCfdiResponse>(response).finally(() => {
-            this.ss.hide();
-        });
-    }
-
-    async validate(entry: QrParams): Promise<ValidacionCfdiResponse | void> {
-        if (!entry) {
-            this.ts.warning('No hay CFDI para validar', 'Ningún archivo contiene un CFDI válido.');
-            return;
-        }
-
-        this.ss.show()
-        const response = await this.validationApi.validate(entry);
         return this.handleResponse<ValidacionCfdiResponse>(response).finally(() => {
             this.ss.hide();
         });

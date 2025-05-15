@@ -11,6 +11,6 @@ export const routes: Routes = {
     login: (deps: RouteDeps) => new LoginView(deps.us, deps.rs!, deps.ss!, deps.ts!),
     camera: (deps: RouteDeps) => new QrScanCameraView(deps.qr!, deps.ts!, deps.vs!),
     scanFile: (deps: RouteDeps) => new QrScanFileView(deps.qr!, deps.ts!, deps.ss!, deps.vs!),
-    historial: (deps: RouteDeps) => new HistorialView(deps.ss!, deps.vs!),
+    historial: (deps: RouteDeps) => new HistorialView(deps.ss!, deps.vs!, deps.ts!),
     suscripcion: (deps: RouteDeps) => new SuscripcionView(deps.us, deps.ss!),
 };

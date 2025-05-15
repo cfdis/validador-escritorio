@@ -25,7 +25,6 @@ declare global {
     }
     validationApi: {
       validateBulk: (bulkEntries: QrParams[]) => Promise<ValidacionCfdiResponse>
-      validate: (data: QrParams) => Promise<ValidacionCfdiResponse>
     }
     db: {
       cfdi: {
