@@ -79,18 +79,12 @@ export class RouterService {
             this.currentView = viewName;
 
             const viewsWithoutMenu = ['login', 'offline', '404', 'dashboard'];
-            // const viewsWithoutUserMenu = ['login', 'offline', '404'];
+            
             if (!viewsWithoutMenu.includes(viewName)) {
                 $('#navDropdownContainer').show();
             } else {
                 $('#navDropdownContainer').hide();
             }
-
-            // if (!viewsWithoutUserMenu.includes(viewName)) {
-            //     this.loadUser();
-            // } else {
-            //     $('#userMenu').hide();
-            // }
 
             const factory = this.routes[viewName];
             if (typeof factory === 'function') {

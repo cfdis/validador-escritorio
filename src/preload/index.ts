@@ -20,7 +20,8 @@ const api = {
   uploadFile: (endpoint: string, file: any, data?: any) =>
     ipcRenderer.invoke('api:uploadFile', { endpoint, file, data }),
   uploadFileProgress: (endpoint: string, files: any, params?: any, data?: any, onProgress?: any, method?: string) =>
-    ipcRenderer.invoke('api:uploadFileProgress', { endpoint, files, params, data, onProgress, method })
+    ipcRenderer.invoke('api:uploadFileProgress', { endpoint, files, params, data, onProgress, method }),
+  openExternal: (endpoint: string) => ipcRenderer.invoke('api:openExternal', endpoint)
 }
 
 // Custom XML API for renderer

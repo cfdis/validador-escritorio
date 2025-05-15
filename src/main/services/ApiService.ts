@@ -8,7 +8,8 @@ export class ApiService {
 
     private constructor() {
         this.environment = {
-            apiUrl: is.dev ? 'http://localhost:8080/validador/' : 'https://facturabilidad.com/validador/'
+            apiUrl: is.dev ? 'http://localhost:8080/validador/' : 'https://facturabilidad.com/validador/',
+            frontUrl: is.dev ? 'http://localhost:8080/app/' : 'https://facturabilidad.com/app/',
         };
     }
 
@@ -277,5 +278,11 @@ export class ApiService {
                 statusText: statusText,
             }
         }
+    }
+
+    public async openExternal(endpoint: string): Promise<void> {
+        const url = `${this.environment.frontUrl}${endpoint}`;
+        const { shell } = require('electron');
+        await shell.openExternal(url);
     }
 }

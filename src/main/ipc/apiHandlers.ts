@@ -57,4 +57,8 @@ export function registerApiHandlers() {
             return apiService.getErrorResponse(error);
         }
     });
+
+    ipcMain.handle('api:openExternal', async (_, endpoint: string) => {
+        await apiService.openExternal(endpoint);
+    });
 }

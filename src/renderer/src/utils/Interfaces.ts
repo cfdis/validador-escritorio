@@ -48,6 +48,42 @@ export interface User {
     // empresas?: { [k: string]: Empresa };
     // roles?: Role[];
     email_verified_at: string | null;
+    suscripciones_validador: SuscripcionValidador[]
+    validaciones_restantes?: number;
+}
+
+export interface SuscripcionValidador {
+    id: number;
+    plan_validador_id: number;
+    user_id?: number;
+    tarjeta_id?: number;
+    provider?: string;
+    subscription_id?: string;
+    status?: string;
+    start_date?: string;
+    end_date?: string;
+    trial_end?: string;
+    cancellation_date?: string;
+    cancellation_reason: string;
+    extra: SuscripcionDetalles;
+    created_at: string;
+    updated_at: string;
+    plan_validador?: PlanValidador;
+}
+
+export interface SuscripcionDetalles {
+    charge_id?: string;
+    customer_id?: string;
+    last_order_id?: string;
+    reject_reason?: string;
+    billing_cycle_end?: string;
+}
+
+export interface PlanValidador {
+    id: number;
+    name: string;
+    amount: number;
+    interval: string;
 }
 
 export interface ValidacionCfdiResult {

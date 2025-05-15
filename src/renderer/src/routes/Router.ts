@@ -4,6 +4,7 @@ import { LoginView } from '../ts/LoginView';
 import { QrScanCameraView } from '../ts/QrScanCameraView';
 import { QrScanFileView } from '../ts/QrScanFileView';
 import { HistorialView } from '../ts/HistorialView';
+import { SuscripcionView } from '../ts/SuscripcionView';
 
 export const routes: Routes = {
     dashboard: (deps: RouteDeps) => new DashboardView(deps.rs!),
@@ -11,4 +12,5 @@ export const routes: Routes = {
     camera: (deps: RouteDeps) => new QrScanCameraView(deps.qr!, deps.ts!, deps.vs!),
     scanFile: (deps: RouteDeps) => new QrScanFileView(deps.qr!, deps.ts!, deps.ss!, deps.vs!),
     historial: (deps: RouteDeps) => new HistorialView(deps.ss!, deps.vs!),
+    suscripcion: (deps: RouteDeps) => new SuscripcionView(deps.us, deps.ss!),
 };

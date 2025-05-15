@@ -18,6 +18,7 @@ declare global {
       delete: (endpoint: string, urlParams?: any) => Promise<any>
       uploadFile: (endpoint: string, file: any, data?: any) => Promise<any>
       uploadFileProgress: (endpoint: string, files: any, params?: any, data?: any, onProgress?: any, method?: string) => Promise<any>
+      openExternal: (endpoint: string) => Promise<void>
     }
     xml: {
       preProcess: (xmlString: string) => Promise<QrParams | null>

@@ -26,17 +26,14 @@ function init(): void {
     $(document).on('click', '#scanFromImage', () => deps.rs.navigate('scanFile', { type: 'image' }));
     $(document).on('click', '#scanFromPdf', () => deps.rs.navigate('scanFile', { type: 'pdf' }));
     $(document).on('click', '#scanFromXml', () => deps.rs.navigate('scanFile', { type: 'xml' }));
+    $(document).on('click', '#suscripcionButton', () => deps.rs.navigate('suscripcion'));
     // $('#reportesBtn').on('click', () => deps.rs.navigate('reportes'));
     $(document).on('click', '#historialBtn', () => deps.rs.navigate('historial'));
 
-    // AppContext.getInstance().router().start()
-
     $(document).on('click', '.btn-home, #retryConection', function (e) {
       e.preventDefault();
-      // const vistaActual = AppContext.getInstance().router().getCurrentView();
       const vistaActual = deps.rs.getCurrentView();
       if (vistaActual !== 'dashboard' && vistaActual !== 'login') {
-        // AppContext.getInstance().router().navigate('dashboard');
         deps.rs.navigate('dashboard');
       }
     });
@@ -50,12 +47,9 @@ function init(): void {
       }
     });
 
-    // $('#navDropdownButton').on('click', () => toggleNavigator());
-    // $(document).on('click', (e) => {
-    //   if (!$(e.target).closest('#navDropdownButton').length) {
-    //     $('#navDropdownMenu').hide();
-    //   }
-    // });
+    $('#userDropdown').on('click', 'button, a', () => {
+      $('#userDropdown').hide();
+    });
 
     $('#hamburgerButton').on('click', () => {
       $('#mainNav').toggleClass('hidden');
@@ -118,11 +112,6 @@ function handleResize() {
     $('#mainNav').addClass('hidden');
   }
 }
-
-// function toggleNavigator() {
-//   const navigator = $('#navDropdownMenu');
-//   navigator.toggle();
-// }
 
 function logout(e) {
   e.preventDefault();
