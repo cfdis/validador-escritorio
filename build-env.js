@@ -2,7 +2,7 @@ require('dotenv').config();
 const { execSync } = require('child_process');
 
 try {
-    execSync('electron-builder --win --publish onTag', {
+    execSync('electron-builder --win --publish always', {
         stdio: 'inherit',
         env: { ...process.env }
     });
