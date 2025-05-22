@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.facturabilidad.validador
 productName: validador_cfdi
 directories:
   buildResources: build
@@ -39,5 +39,10 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://facturabilidad.com/validador/auto-updates
+  provider: github
+  # private: true
+  owner: cfdis
+  repo: validador-escritorio
+  token: ${GH_TOKEN}
+  # provider: generic
+  # url: https://facturabilidad.com/validador/auto-updates

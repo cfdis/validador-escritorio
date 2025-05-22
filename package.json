@@ -19,7 +19,8 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux",
-    "build:migrations": "tsc --project tsconfig.migrations.json"
+    "build:migrations": "tsc --project tsconfig.migrations.json",
+    "publish:win": "npm run build && node build-env.js"
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
@@ -41,6 +42,7 @@
     "@tailwindcss/postcss": "^4.1.4",
     "@types/node": "^22.14.1",
     "autoprefixer": "^10.4.21",
+    "dotenv": "^16.5.0",
     "electron": "^35.1.5",
     "electron-builder": "^25.1.8",
     "electron-vite": "^3.1.0",
