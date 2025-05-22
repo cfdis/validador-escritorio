@@ -40,9 +40,5 @@ appImage:
 npmRebuild: false
 publish:
   provider: github
-  # private: true
   owner: cfdis
   repo: validador-escritorio
-  token: ${GH_TOKEN}
-  # provider: generic
-  # url: https://facturabilidad.com/validador/auto-updates
