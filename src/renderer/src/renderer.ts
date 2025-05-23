@@ -94,10 +94,12 @@ function initRouter(): void {
 
 function initFooter(): void {
   const versions = window.electron.process.versions
-  const information = $('#info')
-  information.html(
-    `<small>© 2025 - Validador CFDI - This app is using Chrome (v${versions.chrome}), Node.js (v${versions.node}), and Electron (v${versions.electron})</small>`
-  )
+  window.app.getVersion().then((appVersion: string) => {
+    const information = $('#info')
+    information.html(
+      `<small>© 2025 - Validador CFDI (v${appVersion}) - This app is using Chrome (v${versions.chrome}), Node.js (v${versions.node}), and Electron (v${versions.electron})</small>`
+    )
+  });
 }
 
 function toggleMenu() {

@@ -35,5 +35,8 @@ declare global {
         getByUuids: (uuids: string[]) => Promise<any[]>
       }
     }
+    app:{
+      getVersion: () => Promise<string>
+    }
   }
 }

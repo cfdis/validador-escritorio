@@ -9,6 +9,7 @@ import { registerValidacionHandlers } from './ipc/validacionHandlers'
 import { migrateDatabase } from './db/migrator'
 import { registerDbHandlers } from './ipc/dbHandlers'
 import { autoUpdater } from 'electron-updater';
+import { registerAppHandlers } from './ipc/appHandlers'
 
 function createWindow(): void {
   // Create the browser window.
@@ -68,6 +69,7 @@ app.whenReady().then(() => {
   registerXmlHandlers();
   registerValidacionHandlers();
   registerDbHandlers();
+  registerAppHandlers();
 
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the

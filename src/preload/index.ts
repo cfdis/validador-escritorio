@@ -43,6 +43,10 @@ const dbApi = {
   }
 }
 
+const appApi = {
+  getVersion: () => ipcRenderer.invoke('app:version')
+}
+
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise
 // just add to the DOM global.
@@ -54,6 +58,7 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('xml', xmlApi)
     contextBridge.exposeInMainWorld('validationApi', validationApi)
     contextBridge.exposeInMainWorld('db', dbApi)
+    contextBridge.exposeInMainWorld('app', appApi)
   } catch (error) {
     console.error(error)
   }
@@ -70,4 +75,6 @@ if (process.contextIsolated) {
   window.validationApi = validationApi
   // @ts-ignore (define in dts)
   window.db = dbApi
+  // @ts-ignore (define in dts)
+  window.app = appApi
 }
