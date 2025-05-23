@@ -91,10 +91,64 @@ export class QrService {
     public async scanFromPdf(file: File): Promise<QrParams | null> {
         const canvases = await this.pdfS.getAsImages(file);
         for (const canvas of canvases) {
-            const qr = this.scanCanvas(canvas);
+            // Intento 1: Escanear el canvas completo
+            let qr = this.scanCanvas(canvas);
             if (qr) return qr;
+
+            // Intento 2: Dividir el canvas en partes y escanear cada parte
+            // Dividir el canvas en 4 partes (2x2)
+            let parts = this.splitCanvas(canvas, 2, 2);
+            for (const part of parts) {
+                qr = this.scanCanvas(part);
+                if (qr) return qr;
+            }
+
+            // // Intento 3: Dividir el canvas en 16 partes (4x4)
+            // parts = this.splitCanvas(canvas, 4, 4);
+            // for (const part of parts) {
+            //     if (process.env.NODE_ENV === 'development') {
+            //         document.body.appendChild(part);
+            //         document.body.appendChild(document.createElement('br'));
+            //     }
+
+            //     qr = this.scanCanvas(part);
+            //     if (qr) return qr;
+            // }
         }
         return null;
+    }
+
+    private splitCanvas(canvas: HTMLCanvasElement, rows: number, cols: number): HTMLCanvasElement[] {
+        const parts: HTMLCanvasElement[] = [];
+        const partWidth = canvas.width / cols;
+        const partHeight = canvas.height / rows;
+
+        canvas.getContext('2d')!;
+
+        for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+                const partCanvas = document.createElement('canvas');
+                partCanvas.width = partWidth;
+                partCanvas.height = partHeight;
+
+                const ctx = partCanvas.getContext('2d')!;
+                ctx.drawImage(
+                    canvas,
+                    col * partWidth,
+                    row * partHeight,
+                    partWidth,
+                    partHeight,
+                    0,
+                    0,
+                    partWidth,
+                    partHeight
+                );
+
+                parts.push(partCanvas);
+            }
+        }
+
+        return parts;
     }
 
     private processResult(raw: string): QrParams | null {

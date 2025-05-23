@@ -36,7 +36,7 @@ export class XmlService {
                 rr: rfcReceptor,
                 tt: total,
                 fe: last8,
-                xml: xmlString,
+                // xml: xmlString,
             };
 
             return (qrData);

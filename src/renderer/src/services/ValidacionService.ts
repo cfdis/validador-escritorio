@@ -29,6 +29,7 @@ export class ValidacionService extends FrontApi {
         entries.forEach((item, index) => {
 
             let data = `<td colspan="4" class="px-3 py-2"> No se encontró un QR válido </td>`;
+            let validarBtn = '';
 
             if (item.qrData) {
                 data = `
@@ -37,6 +38,15 @@ export class ValidacionService extends FrontApi {
                             <td class="px-3 py-2" title="${item.qrData.rr}">${item.qrData.rr}</td>
                             <td class="px-3 py-2" title="${item.qrData.tt}">${item.qrData.tt}</td>
                         `;
+
+                // icono para boton revalidar/validar
+                const iconValidar = item.result?.resultado ? 'sync' : 'check_circle';
+                const colorValidar = item.result?.resultado ? 'text-yellow-500' : 'text-green-500';
+                const colorValidarHover = item.result?.resultado ? 'text-yellow-700' : 'text-green-700';
+                const validarText = item.result?.resultado ? 'Revalidar' : 'Validar';
+                validarBtn = `<button class="validar-single-btn btn ${colorValidar} hover:${colorValidarHover} text-xs px-2 py-1 rounded" data-id="${item.qrData?.id}" title="${validarText}">
+                                    <i class="material-icons">${iconValidar}</i>
+                                </button>`;
             }
 
             let dataResult = ' <td colspan="3" class="px-3 py-2"> - </td>';
@@ -61,6 +71,7 @@ export class ValidacionService extends FrontApi {
                                 <button class="text-red-500 hover:text-red-700 font-semibold btn-remove" data-index="${index}">
                                     <i class="material-icons">delete</i>
                                 </button>
+                                ${validarBtn}
                             </td>
                         </tr>
                     `);

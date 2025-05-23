@@ -4,28 +4,43 @@
             Historial de CFDIs validados
         </h3>
         <div id="filtrosContainer" class="mb-4 p-4 bg-gray-100 dark:bg-gray-700 rounded-lg shadow">
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <input type="text" id="filtroUuid" placeholder="UUID" class="input-filtro" />
-                <input type="text" id="filtroEmisor" placeholder="RFC Emisor" class="input-filtro" />
-                <input type="text" id="filtroReceptor" placeholder="RFC Receptor" class="input-filtro" />
-                <select id="filtroStatus" class="input-filtro">
-                    <option value="">Todos los estados</option>
-                    <option value="Vigente">Vigente</option>
-                    <option value="Cancelado">Cancelado</option>
-                    <option value="No encontrado">No encontrado</option>
-                </select>
-                <input type="date" id="filtroFechaDesde" class="input-filtro" />
-                <input type="date" id="filtroFechaHasta" class="input-filtro" />
-                <input type="number" id="filtroMontoMin" placeholder="Monto mínimo" class="input-filtro" />
-                <input type="number" id="filtroMontoMax" placeholder="Monto máximo" class="input-filtro" />
-            </div>
+            <form id="formFiltros" onsubmit="return false">
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <input type="text" id="filtroUuid" placeholder="UUID"
+                        class="input-filtro px-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-600" />
+                    <input type="text" id="filtroEmisor" placeholder="RFC Emisor"
+                        class="input-filtro px-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-600" />
+                    <input type="text" id="filtroReceptor" placeholder="RFC Receptor"
+                        class="input-filtro px-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-600" />
+                    <select id="filtroStatus"
+                        class="input-filtro btn bg-white dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-600">
+                        <option value="" class="btn">Todos los estados</option>
+                        <option value="Vigente" class="btn">Vigente</option>
+                        <option value="Cancelado" class="btn">Cancelado</option>
+                        <option value="No Encontrado" class="btn">No encontrado</option>
+                    </select>
+                    <input type="date" id="filtroFechaDesde"
+                        class="input-filtro px-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-600" />
+                    <input type="date" id="filtroFechaHasta"
+                        class="input-filtro px-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-600" />
+                    <input type="number" id="filtroMontoMin" placeholder="Monto mínimo"
+                        class="input-filtro px-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-600" />
+                    <input type="number" id="filtroMontoMax" placeholder="Monto máximo"
+                        class="input-filtro px-1 bg-white dark:bg-gray-800 text-gray-800 dark:text-white border border-gray-300 dark:border-gray-600" />
 
-            <div class="flex justify-end mt-4 space-x-2">
-                <button id="btnAplicarFiltros"
-                    class="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Aplicar Filtros</button>
-                <button id="btnGenerarReporte"
-                    class="btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Generar Reporte</button>
-            </div>
+                    <div class="flex justify-end space-x-2">
+                        <button id="btnLimpiarFiltros" type="reset"
+                            class="btn bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded">Limpiar
+                            Filtros</button>
+                        <button id="btnAplicarFiltros" type="button"
+                            class="btn bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">Aplicar
+                            Filtros</button>
+                        <button id="btnGenerarReporte" type="button"
+                            class="btn bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded">Generar
+                            Reporte</button>
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="overflow-x-auto rounded-lg border border-gray-300 dark:border-gray-600 shadow">
             <table class="min-w-full bg-white dark:bg-gray-800 text-gray-800 dark:text-white text-sm rounded-lg">
@@ -39,7 +54,7 @@
                         <th class="px-3 py-2 text-left">Estado</th>
                         <th class="px-3 py-2 text-left">Cancelable</th>
                         <th class="px-3 py-2 text-left">Estatus Cancelación</th>
-                        <th class="px-3 py-2 text-left">Acciones</th>
+                        <th class="px-3 py-2 text-left min-w-30">Acciones</th>
                     </tr>
                 </thead>
                 <tbody id="historialTableBody"></tbody>

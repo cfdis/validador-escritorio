@@ -5,7 +5,10 @@ export class PdfService {
     constructor() {
         // const pdfWorkerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${version}/build/pdf.worker.min.mjs`;
         // GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
-        const pdfWorkerSrc = './assets/pdf.worker.min.mjs';
+        let pdfWorkerSrc = './assets/pdf.worker.min.mjs';
+        if (process.env.NODE_ENV === 'development') {
+            pdfWorkerSrc = '../../../out/renderer/assets/pdf.worker.min.mjs';
+        }
         GlobalWorkerOptions.workerSrc = pdfWorkerSrc;
     }
 
@@ -19,7 +22,7 @@ export class PdfService {
         const pdfDoc = await this.openPdf(file);
         const images: HTMLCanvasElement[] = [];
 
-        for (let i = 1; i <= pdfDoc.numPages; i++) {
+        for (let i = pdfDoc.numPages; i >= 1; i--) {
             const pdfPage = await pdfDoc.getPage(i);
             const viewPort = pdfPage.getViewport({ scale: 2 });
 

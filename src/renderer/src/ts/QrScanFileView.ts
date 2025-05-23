@@ -10,6 +10,7 @@ import { ValidacionService } from '../services/ValidacionService';
 export class QrScanFileView implements View {
     private fileType: string = '';
     private entries: DataEntry[] = [];
+    private db = window.db;
 
     constructor(
         private qr: QrService,
@@ -45,7 +46,6 @@ export class QrScanFileView implements View {
     }
 
     private async procesarArchivos(files: File[]) {
-        this.ss.show();
         for (const file of files) {
             // si el archivo ya existe, no lo agregamos
             const sameFile = this.entries.some(entry => entry.file?.name === file.name && entry.file.size === file.size);
@@ -67,23 +67,41 @@ export class QrScanFileView implements View {
                     break;
             }
 
-            let DataEntry = {
+            let dataEntry = {
                 file: file,
                 qrData: qrData,
             } as DataEntry;
 
             // si ya existe una entrada con un id igual, no la agregamos
-            const alreadyExists = this.entries.some(entry => entry.qrData?.id === DataEntry.qrData?.id);
-            if (DataEntry.qrData && alreadyExists) {
-                this.ts.warning('Ya procesado', `El CFDI con ID ${DataEntry.qrData?.id} ya se encuentra en la lista.`);
+            const alreadyExists = this.entries.some(entry => entry.qrData?.id === dataEntry.qrData?.id);
+            if (dataEntry.qrData && alreadyExists) {
+                this.ts.warning('Ya procesado', `El CFDI con ID ${dataEntry.qrData?.id} ya se encuentra en la lista.`);
                 continue;
             }
 
-            this.entries.push(DataEntry);
+            const uuid = dataEntry.qrData?.id || '';
+
+            try {
+                const result = await this.db.cfdi.getByUuid(uuid);
+                if (result) {
+                    dataEntry.result = {
+                        id: result.uuid,
+                        resultado: {
+                            CodigoEstatus: '',
+                            EsCancelable: result.cancelable,
+                            Estado: result.status,
+                            EstatusCancelacion: result.cancel_status,
+                            ValidacionEFOS: '',
+                            UltimaFechaConsulta: result.ultima_validacion
+                        }
+                    };
+                }
+            } catch (_) {
+                // do nothing
+            }
+
+            this.entries.push(dataEntry);
         }
-        this.vs.renderTable('qrResultContainer', this.entries);
-        
-        this.ss.hide();
     }
 
     private scanFromXml(file: File): Promise<QrParams | null> {
@@ -106,7 +124,13 @@ export class QrScanFileView implements View {
 
             const files = Array.from(input.files);
 
-            this.procesarArchivos(files);
+            this.ss.show();
+            this.procesarArchivos(files).then(() => {
+                this.vs.renderTable('qrResultContainer', this.entries);
+            }).catch((err) => {
+                this.vs.handleError(err);
+                this.ts.error('Error', 'No se pudo procesar el archivo.');
+            }).finally(() => { this.ss.hide() });
 
             input.value = '';
         });
@@ -120,24 +144,65 @@ export class QrScanFileView implements View {
         });
 
         $('#validateQrBtn').on('click', () => {
-            this.vs.validateBulk(this.entries).then((response: ValidacionCfdiResponse | void) => {
-                if (response) {
-                    response.data.forEach(element => {
-                        const index = this.entries.findIndex(entry => entry.qrData?.id === element.id);
-                        if (index !== -1) {
-                            this.entries[index].result = element;
-                        }
-                    });
+            if (this.entries.length === 0) {
+                this.ts.warning('Alerta', 'No hay CFDIs para validar.');
+                return;
+            }
 
-                    if (!response.success) {
-                        this.ts.warning('Alerta', response.message);
+            this.validar(this.entries);
+        });
+
+        $('#validateNewQrBtn').on('click', () => {
+            const nuevos = this.entries.filter(entry => entry.result === undefined);
+            if (nuevos.length === 0) {
+                this.ts.warning('Alerta', 'No hay CFDIs nuevos para validar.');
+                return;
+            }
+
+            this.validar(nuevos);
+        })
+
+        $('#revalidateQrBtn').on('click', () => {
+            const yaValidados = this.entries.filter(entry => entry.result !== undefined);
+            if (yaValidados.length === 0) {
+                this.ts.warning('Alerta', 'No hay CFDIs para revalidar.');
+                return;
+            }
+            this.validar(yaValidados);
+        });
+
+        $('#deleteInvalidQrBtn').on('click', () => {
+            this.entries = this.entries.filter(entry => entry.qrData != null);
+            this.vs.renderTable('qrResultContainer', this.entries);
+        });
+
+        $(document).on('click', '.validar-single-btn', (e: any) => {
+            const id = $(e.currentTarget).data('id');
+            const entry = this.entries.find(entry => entry.qrData?.id === id);
+            if (entry) {
+                this.validar([entry]);
+            }
+        });
+    }
+
+    private validar(entries: DataEntry[]): void {
+        this.vs.validateBulk(entries).then((response: ValidacionCfdiResponse | void) => {
+            if (response) {
+                response.data.forEach(element => {
+                    const index = this.entries.findIndex(entry => entry.qrData?.id === element.id);
+                    if (index !== -1) {
+                        this.entries[index].result = element;
                     }
+                });
 
-                    this.vs.renderTable('qrResultContainer', this.entries);
+                if (!response.success) {
+                    this.ts.warning('Alerta', response.message);
                 }
-            }).catch((err) => {
-                this.vs.handleError(err);
-            });
+
+                this.vs.renderTable('qrResultContainer', this.entries);
+            }
+        }).catch((err) => {
+            this.vs.handleError(err);
         });
     }
 
@@ -145,6 +210,10 @@ export class QrScanFileView implements View {
         $('#fileInput').off('change');
         $(document).off('click', '.btn-remove');
         $('#validateQrBtn').off('click');
+        $('#validateNewQrBtn').off('click');
+        $('#revalidateQrBtn').off('click');
+        $('#deleteInvalidQrBtn').off('click');
+        $(document).off('click', '.validar-single-btn');
         this.entries = [];
     }
 }

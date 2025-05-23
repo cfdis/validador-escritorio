@@ -122,12 +122,6 @@ export class HistorialView implements View {
             fe: cfdi.fe,
         };
 
-        // this.vs.validate(params).then(() => {
-        //     this.loadPage();
-        // }).catch((err) => {
-        //     this.vs.handleError(err);
-        // });
-
         let entry: DataEntry = {
             qrData: params,
         }
@@ -245,6 +239,10 @@ export class HistorialView implements View {
         $('#btnGenerarReporte').on('click', () => {
             this.generarReporte();
         });
+
+        $('#formFiltros').on('reset', () => {
+            this.renderTable(this.cfdis);
+        });
     }
 
     private unbindEvents() {
@@ -254,6 +252,7 @@ export class HistorialView implements View {
         $('#historialTableBody').off('click', '.revalidar-btn');
         $('#btnAplicarFiltros').off('click');
         $('#btnGenerarReporte').off('click');
+        $('#formFiltros').off('reset');
     }
 
     destroy(): void {

@@ -39,7 +39,7 @@ export class QrScanCameraView implements View {
     }
 
     private bindEvents(): void {
-        $('#startCameraBtn').on('click', async (e) => {
+        $('#startCameraBtn').on('click', async (e: any) => {
             e.preventDefault();
             this.selectedDeviceId = this.cameraSelect.val() as string;
 
@@ -54,19 +54,19 @@ export class QrScanCameraView implements View {
             await this.qr.startCamera(this.videoElement, this.onsuccess.bind(this), this.onerror, this.onException, this.selectedDeviceId);
         });
 
-        $('#stopCameraBtn').on('click', (e) => {
+        $('#stopCameraBtn').on('click', (e: any) => {
             e.preventDefault();
             this.qr.stopCamera(this.videoElement);
             $('#startCameraBtn').removeClass('hidden');
             $('#stopCameraBtn').addClass('hidden');
         });
 
-        $(document).on('click', '.btn-home', (e) => {
+        $(document).on('click', '.btn-home', (e: any) => {
             e.preventDefault();
             this.qr.stopCamera(this.videoElement);
         });
 
-        $(document).on('click', '.btn-remove', (e) => {
+        $(document).on('click', '.btn-remove', (e: any) => {
             const index = parseInt($(e.currentTarget).data('index'), 10);
             if (!isNaN(index)) {
                 this.entries.splice(index, 1);
@@ -81,6 +81,14 @@ export class QrScanCameraView implements View {
             }
 
             this.validar(this.entries);
+        });
+
+        $(document).on('click', '.validar-single-btn', (e) => {
+            const id = $(e.currentTarget).data('id');
+            const entry = this.entries.find(entry => entry.qrData?.id === id);
+            if (entry) {
+                this.validar([entry]);
+            }
         });
     }
 
@@ -193,6 +201,7 @@ export class QrScanCameraView implements View {
         $('#stopCameraBtn').off('click');
         $(document).off('click', '.btn-home');
         $(document).off('click', '.btn-remove');
+        $(document).off('click', '.validar-single-btn');
         $('#validateQrBtn').off('click');
         this.qr.stopCamera(this.videoElement);
         this.entries = [];

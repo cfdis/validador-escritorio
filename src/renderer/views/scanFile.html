@@ -13,7 +13,7 @@
                     <tr>
                         <th class="px-3 py-2 text-center align-middle" colspan="5">Consulta</th>
                         <th class="px-3 py-2 text-center align-middle" colspan="3">Resultado</th>
-                        <th class="px-3 py-2 text-center align-middle" rowspan="2">Acciones</th>
+                        <th class="px-3 py-2 text-center align-middle min-w-24" rowspan="2">Acciones</th>
                     </tr>
                     <tr>
                         <th class="px-3 py-2 text-left">Archivo</th>
@@ -30,10 +30,26 @@
             </table>
         </div>
 
-        <div class="text-center mt-4">
+        <div class="text-center mt-4 flex flex-wrap justify-evenly">
             <button id="validateQrBtn"
-                class="btn px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium transition">
-                Validar
+                class="flex mx-2 my-2 btn px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium transition">
+                <i class="material-icons">check_circle</i>
+                Validar Todos
+            </button>
+            <button id="validateNewQrBtn"
+                class="flex mx-2 my-2 btn px-4 py-2 bg-green-600 hover:bg-green-700 rounded-lg text-white font-medium transition">
+                <i class="material-icons">check</i>
+                Validar Nuevos
+            </button>
+            <button id="revalidateQrBtn"
+                class="flex mx-2 my-2 btn px-4 py-2 bg-orange-600 hover:bg-orange-700 rounded-lg text-white font-medium transition">
+                <i class="material-icons">sync</i>
+                Revalidar los ya validados
+            </button>
+            <button id="deleteInvalidQrBtn"
+                class="flex mx-2 my-2 btn px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white font-medium transition">
+                <i class="material-icons">delete</i>
+                Descartar archivos no válidos
             </button>
         </div>
     </div>
