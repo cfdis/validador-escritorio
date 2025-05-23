@@ -1,6 +1,6 @@
 {
   "name": "validador_cfdi",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Validador cfdi",
   "main": "./out/main/index.js",
   "author": "Eduardo Islas",
