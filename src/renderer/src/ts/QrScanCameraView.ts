@@ -11,6 +11,7 @@ export class QrScanCameraView implements View {
     private entries: DataEntry[] = [];
     private videoElement: HTMLVideoElement;
     private cameraSelect: any;
+    private db = window.db;
 
     constructor(
         private qr: QrService,
@@ -74,29 +75,38 @@ export class QrScanCameraView implements View {
         });
 
         $('#validateQrBtn').on('click', () => {
-            this.vs.validateBulk(this.entries).then((response: ValidacionCfdiResponse | void) => {
-                if (response) {
-                    response.data.forEach(element => {
-                        const index = this.entries.findIndex(entry => entry.qrData?.id === element.id);
-                        if (index !== -1) {
-                            this.entries[index].result = element;
-                        }
-                    });
+            if (this.entries.length === 0) {
+                this.ts.warning('Alerta', 'No hay CFDIs para validar.');
+                return;
+            }
 
-                    if (!response.success) {
-                        let extraMessage = '';
-                        response.data.filter(item => item.error !== undefined).forEach((item) => {
-                            extraMessage += `<br>${item.id} -> ${item.error}`;
-                        }
-                        );
-                        this.ts.warning('Alerta', response.message + extraMessage);
+            this.validar(this.entries);
+        });
+    }
+
+    private validar(entries: DataEntry[]): void {
+        this.vs.validateBulk(entries).then((response: ValidacionCfdiResponse | void) => {
+            if (response) {
+                response.data.forEach(element => {
+                    const index = this.entries.findIndex(entry => entry.qrData?.id === element.id);
+                    if (index !== -1) {
+                        this.entries[index].result = element;
                     }
+                });
 
-                    this.vs.renderTable('cameraQrResultContainer', this.entries);
+                if (!response.success) {
+                    let extraMessage = '';
+                    response.data.filter(item => item.error !== undefined).forEach((item) => {
+                        extraMessage += `<br>${item.id} -> ${item.error}`;
+                    }
+                    );
+                    this.ts.warning('Alerta', response.message + extraMessage);
                 }
-            }).catch((err) => {
-                this.vs.handleError(err);
-            });
+
+                this.vs.renderTable('cameraQrResultContainer', this.entries);
+            }
+        }).catch((err) => {
+            this.vs.handleError(err);
         });
     }
 
@@ -105,6 +115,8 @@ export class QrScanCameraView implements View {
             alert('No se detectó un código QR válido. Intenta de nuevo.');
             return;
         }
+
+        this.beep();
 
         let fileEntry = {
             qrData: result,
@@ -117,9 +129,31 @@ export class QrScanCameraView implements View {
             return;
         }
 
-        this.entries.push(fileEntry);
+        const uuid = fileEntry.qrData?.id || '';
 
-        this.vs.renderTable('cameraQrResultContainer', this.entries);
+        this.db.cfdi.getByUuid(uuid).then((result: any) => {
+            if (result) {
+                fileEntry.result = {
+                    id: result.uuid,
+                    resultado: {
+                        CodigoEstatus: '',
+                        EsCancelable: result.cancelable,
+                        Estado: result.status,
+                        EstatusCancelacion: result.cancel_status,
+                        ValidacionEFOS: '',
+                        UltimaFechaConsulta: result.ultima_validacion
+                    }
+                };
+
+                this.entries.push(fileEntry);
+                this.vs.renderTable('cameraQrResultContainer', this.entries);
+            } else {
+                this.validar([fileEntry]);
+            }
+        }).catch((_: any) => {
+            this.validar([fileEntry]);
+        });
+        // this.vs.renderTable('cameraQrResultContainer', this.entries);
     }
 
     private onerror(_: any): void {
@@ -130,6 +164,27 @@ export class QrScanCameraView implements View {
         // console.error('QR Code exception:', e);
         alert('Error al iniciar la cámara: ' + e.message);
     }
+
+    private beep(duration = 200, frequency = 900, volume = 1) {
+        const context = new AudioContext();
+        const oscillator = context.createOscillator();
+        const gainNode = context.createGain();
+
+        oscillator.type = 'sine';
+        oscillator.frequency.value = frequency;
+        gainNode.gain.value = volume;
+
+        oscillator.connect(gainNode);
+        gainNode.connect(context.destination);
+
+        oscillator.start();
+
+        setTimeout(() => {
+            oscillator.stop();
+            context.close();
+        }, duration);
+    }
+
 
     public destroy(): void {
         $('#startCameraBtn').off('click');

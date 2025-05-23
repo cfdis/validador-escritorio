@@ -37,7 +37,9 @@ const dbApi = {
   cfdi: {
     getAll: () => ipcRenderer.invoke('db:cfdi:getAll'),
     delete: (id: number) => ipcRenderer.invoke('db:cfdi:delete', id),
-    deleteByUuid: (uuid: string) => ipcRenderer.invoke('db:cfdi:deleteByUuid', uuid)
+    deleteByUuid: (uuid: string) => ipcRenderer.invoke('db:cfdi:deleteByUuid', uuid),
+    getByUuid: (uuid: string) => ipcRenderer.invoke('db:cfdi:getByUuid', uuid),
+    getByUuids: (uuids: string[]) => ipcRenderer.invoke('db:cfdi:getByUuids', uuids)
   }
 }
 

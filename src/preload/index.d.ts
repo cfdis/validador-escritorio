@@ -31,6 +31,8 @@ declare global {
         getAll: () => Promise<any[]>
         delete: (id: number) => Promise<void>
         deleteByUuid: (uuid: string) => Promise<void>
+        getByUuid: (uuid: string) => Promise<any>
+        getByUuids: (uuids: string[]) => Promise<any[]>
       }
     }
   }

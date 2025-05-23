@@ -169,3 +169,69 @@ export async function obtenerCfdis(): Promise<any[]> {
         .orderBy('cfdis.updated_at', 'desc')
         .execute();
 }
+
+export async function obtenerCfdiByUuid(uuid: string): Promise<any> {
+    return await db
+        .selectFrom('cfdis')
+        .leftJoin('persons as emisor', 'cfdis.emisor_id', 'emisor.id')
+        .leftJoin('persons as receptor', 'cfdis.receptor_id', 'receptor.id')
+        .leftJoin('estatus', 'cfdis.estatus_id', 'estatus.id')
+        .leftJoin('estatus_cancelacion', 'cfdis.estatus_cancelacion_id', 'estatus_cancelacion.id')
+        .leftJoin('es_cancelable', 'cfdis.es_cancelable_id', 'es_cancelable.id')
+        .select([
+            'cfdis.id',
+            'cfdis.uuid',
+            'cfdis.emisor_id',
+            'cfdis.receptor_id',
+            'cfdis.total',
+            'cfdis.fe',
+            'cfdis.estatus_id',
+            'cfdis.estatus_cancelacion_id',
+            'cfdis.es_cancelable_id',
+            'cfdis.detalle',
+            'cfdis.ultima_validacion',
+            'cfdis.updated_at',
+            'emisor.name as emisor_name',
+            'emisor.rfc as emisor_rfc',
+            'receptor.name as receptor_name',
+            'receptor.rfc as receptor_rfc',
+            'estatus.status as status',
+            'estatus_cancelacion.status as cancel_status',
+            'es_cancelable.cancelable as cancelable'
+        ])
+        .where('uuid', '=', uuid)
+        .executeTakeFirst();
+}
+
+export async function obtenerCfdisByUuid(uuids: string[]): Promise<any[]> {
+    return await db
+        .selectFrom('cfdis')
+        .leftJoin('persons as emisor', 'cfdis.emisor_id', 'emisor.id')
+        .leftJoin('persons as receptor', 'cfdis.receptor_id', 'receptor.id')
+        .leftJoin('estatus', 'cfdis.estatus_id', 'estatus.id')
+        .leftJoin('estatus_cancelacion', 'cfdis.estatus_cancelacion_id', 'estatus_cancelacion.id')
+        .leftJoin('es_cancelable', 'cfdis.es_cancelable_id', 'es_cancelable.id')
+        .select([
+            'cfdis.id',
+            'cfdis.uuid',
+            'cfdis.emisor_id',
+            'cfdis.receptor_id',
+            'cfdis.total',
+            'cfdis.fe',
+            'cfdis.estatus_id',
+            'cfdis.estatus_cancelacion_id',
+            'cfdis.es_cancelable_id',
+            'cfdis.detalle',
+            'cfdis.ultima_validacion',
+            'cfdis.updated_at',
+            'emisor.name as emisor_name',
+            'emisor.rfc as emisor_rfc',
+            'receptor.name as receptor_name',
+            'receptor.rfc as receptor_rfc',
+            'estatus.status as status',
+            'estatus_cancelacion.status as cancel_status',
+            'es_cancelable.cancelable as cancelable'
+        ])
+        .where('cfdis.uuid', 'in', uuids)
+        .execute();
+}
