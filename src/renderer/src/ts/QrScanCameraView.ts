@@ -148,9 +148,11 @@ export class QrScanCameraView implements View {
                 this.entries.push(fileEntry);
                 this.vs.renderTable('cameraQrResultContainer', this.entries);
             } else {
+                this.entries.push(fileEntry);
                 this.validar([fileEntry]);
             }
         }).catch((_: any) => {
+            this.entries.push(fileEntry);
             this.validar([fileEntry]);
         });
         // this.vs.renderTable('cameraQrResultContainer', this.entries);
