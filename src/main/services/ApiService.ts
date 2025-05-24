@@ -1,10 +1,12 @@
 import axios, { AxiosProgressEvent, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { ApiErrorDetails, ApiResponse, LaravelException } from '../utils/Interfaces';
 import { is } from '@electron-toolkit/utils';
+import keytar from 'keytar';
 
 export class ApiService {
     environment: any = null;
-    token: string | null = null;
+    SERVICE = 'validador_cfdi_app';
+    ACCOUNT = 'current_user';
 
     private constructor() {
         this.environment = {
@@ -22,22 +24,18 @@ export class ApiService {
     }
 
     // Establece el token JWT. (usualmente desde el userService)
-    public setToken(token: string): void {
-        this.token = token;
-    }
-
-    public getToken(): string | null {
-        return this.token;
+    public async setToken(token: string): Promise<void> {
+        await keytar.setPassword(this.SERVICE, this.ACCOUNT, token);
     }
 
     // Cuando se cierra la sesión, se elimina el token.
-    public removeToken(): void {
-        this.token = null;
+    public async removeToken(): Promise<void> {
+        await keytar.deletePassword(this.SERVICE, this.ACCOUNT);
     }
 
     // Obtiene el token JWT.
-    private getJwtToken(): string | null {
-        return this.token;
+    private async getJwtToken(): Promise<string | null> {
+        return await keytar.getPassword(this.SERVICE, this.ACCOUNT);
     }
 
     // Configura los encabezados para la petición.
@@ -48,8 +46,8 @@ export class ApiService {
         };
     }
 
-    private createAuthHeaders() {
-        const token = this.getJwtToken();
+    private async createAuthHeaders() {
+        const token = await this.getJwtToken();
         return {
             ...this.getHeaders(),
             Authorization: `Bearer ${token}`,
@@ -59,7 +57,7 @@ export class ApiService {
     // Realiza una solicitud GET.
     async get(endpoint: string, urlParams: any = {}) {
         const path = endpoint.replace(/^\//, '');
-        const headers = this.createAuthHeaders();
+        const headers = await this.createAuthHeaders();
 
         const config: AxiosRequestConfig = {
             method: 'GET',
@@ -80,7 +78,7 @@ export class ApiService {
     // Realiza una solicitud POST.
     async post(endpoint: string, urlParams: any = {}, data: any = {}, useAuth: boolean = true) {
         endpoint = endpoint.replace(/^\//, '');
-        const headers = useAuth ? this.createAuthHeaders() : this.getHeaders();
+        const headers = useAuth ? await this.createAuthHeaders() : this.getHeaders();
 
         const config: AxiosRequestConfig = {
             method: 'POST',
@@ -102,7 +100,7 @@ export class ApiService {
     // Realiza una solicitud PUT.
     async put(endpoint: string, urlParams: any = {}, data: any = {}) {
         endpoint = endpoint.replace(/^\//, '');
-        const headers = this.createAuthHeaders();
+        const headers = await this.createAuthHeaders();
 
         const config: AxiosRequestConfig = {
             method: 'PUT',
@@ -124,7 +122,7 @@ export class ApiService {
     // Realiza una solicitud DELETE.
     async delete(endpoint: string, urlParams: any = {}) {
         endpoint = endpoint.replace(/^\//, '');
-        const headers = this.createAuthHeaders();
+        const headers = await this.createAuthHeaders();
 
         const config: AxiosRequestConfig = {
             method: 'DELETE',
@@ -159,12 +157,14 @@ export class ApiService {
             }
         }
 
+        const token = await this.getJwtToken();
+
         const config: AxiosRequestConfig = {
             method: 'POST',
             url: `${this.environment.apiUrl}${endpoint}`,
             headers: {
                 'Accept': 'application/json',
-                Authorization: `Bearer ${this.getJwtToken()}`,
+                Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data',
             },
             data: formData,
@@ -211,12 +211,14 @@ export class ApiService {
             }
         }
 
+        const token = await this.getJwtToken();
+
         const config: AxiosRequestConfig = {
             method: 'POST',
             url: `${this.environment.apiUrl}${endpoint}`,
             headers: {
                 'Accept': 'application/json',
-                Authorization: `Bearer ${this.getJwtToken()}`,
+                Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data',
             },
             data: formData,

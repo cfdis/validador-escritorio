@@ -20,15 +20,14 @@ export class UserService {
     public async login(email: string, password: string) {
         const response = await this._api.post('login', {}, { email, password });
         if (response?.token) {
-            this._api.setToken(response.token);
+            await this._api.setToken(response.token);
         }
     }
 
     public async logout() {
         await this._api.post('logout');
-
+        await this._api.removeToken();
         this.reset();
-        this._api.removeToken();
     }
 
     public getUser() {

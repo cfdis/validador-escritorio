@@ -30,6 +30,7 @@
     "better-sqlite3": "^11.9.1",
     "electron-updater": "^6.3.9",
     "jquery": "^3.7.1",
+    "keytar": "^7.9.0",
     "kysely": "^0.28.2",
     "material-icons": "^1.13.14",
     "pdfjs-dist": "^5.1.91",
