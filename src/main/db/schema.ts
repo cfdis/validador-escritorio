@@ -67,10 +67,20 @@ export type Cfdi = Selectable<CfdiTable>
 export type NewCfdi = Insertable<CfdiTable>
 export type UpdateCfdi = Updateable<CfdiTable>
 
+export interface CfdiUserTable{
+    cfdi_id: number;
+    user_id: number;
+}
+
+export type CfdiUser = Selectable<CfdiUserTable>
+export type NewCfdiUser = Insertable<CfdiUserTable>
+export type UpdateCfdiUser = Updateable<CfdiUserTable>
+
 export interface Database {
     persons: PersonTable;
     estatus: EstatusTable;
     estatus_cancelacion: EstatusCancelacionTable;
     es_cancelable: EsCancelableTable;
     cfdis: CfdiTable;
+    cfdi_user: CfdiUserTable;
 }

@@ -5,16 +5,23 @@ export class UserService {
     lastCheckLoginResult: boolean | null = null;
     lastCheckLoginTime = 0;
     cacheTTL = 500;
-    _user = undefined;
+    _user: any = undefined;
     // sat = null;
     // router = null;
     // _empresaPromise = undefined;
     // _empresas = {};
 
 
-    constructor(private _api: ApiService) {
+    private constructor(private _api: ApiService) {
         // this.sat = sat;
         // this.router = router;
+    }
+    private static instance: UserService | null = null;
+    public static getInstance(api: ApiService): UserService {
+        if (!UserService.instance) {
+            UserService.instance = new UserService(api);
+        }
+        return UserService.instance;
     }
 
     public async login(email: string, password: string) {

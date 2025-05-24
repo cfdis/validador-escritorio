@@ -1,28 +1,30 @@
 import { ipcMain } from 'electron'
-import { eliminarCfdi, eliminarCfdiByUuid, obtenerCfdiByUuid, obtenerCfdis, obtenerCfdisByUuid } from '../db/repo/cfdiRepository';
+import { CfdiRepository } from '../db/repo/CfdiRepository';
 
 export function registerDbHandlers() {
+    const cfdiRepo = CfdiRepository.getInstance();
+
     ipcMain.handle('db:cfdi:getAll', async (_) => {
-        const result = await obtenerCfdis();
+        const result = await cfdiRepo.obtenerCfdis();
 
         return result;
     });
 
     ipcMain.handle('db:cfdi:delete', async (_, id: number) => {
-        await eliminarCfdi(id);
+        await cfdiRepo.eliminarCfdi(id);
     });
 
     ipcMain.handle('db:cfdi:deleteByUuid', async (_, uuid: string) => {
-        await eliminarCfdiByUuid(uuid);
+        await cfdiRepo.eliminarCfdiByUuid(uuid);
     });
 
     ipcMain.handle('db:cfdi:getByUuid', async (_, uuid: string) => {
-        const result = await obtenerCfdiByUuid(uuid);
+        const result = await cfdiRepo.obtenerCfdiByUuid(uuid);
         return result;
     });
 
     ipcMain.handle('db:cfdi:getByUuids', async (_, uuids: string[]) => {
-        const result = await obtenerCfdisByUuid(uuids);
+        const result = await cfdiRepo.obtenerCfdisByUuid(uuids);
         return result;
     });
 }

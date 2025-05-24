@@ -2,11 +2,12 @@ import { ipcMain } from 'electron'
 import { ApiService } from "../services/ApiService";
 import { ValidacionService } from '../services/ValidacionService';
 import { DataEntry, QrParams, ValidacionCfdiResponseItem } from '../utils/Interfaces';
-import { guardarOActualizarCfdi } from '../db/repo/cfdiRepository';
+import { CfdiRepository } from '../db/repo/CfdiRepository';
 
 export function registerValidacionHandlers() {
     const apiService = ApiService.getInstance();
     const validacionService = new ValidacionService(apiService);
+    const cfdiRepo = CfdiRepository.getInstance();
 
     ipcMain.handle('validate:bulk', async (_, data: DataEntry[]) => {
         try {
@@ -19,7 +20,7 @@ export function registerValidacionHandlers() {
                 if (entry && resultado) {
                     entry.result = resultado;
 
-                    guardarOActualizarCfdi(entry);
+                    cfdiRepo.guardarOActualizarCfdi(entry);
                 }
 
             });

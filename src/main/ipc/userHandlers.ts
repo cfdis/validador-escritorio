@@ -4,7 +4,7 @@ import { UserService } from '../services/UserService';
 
 export function registerAuthHandlers() {
     const apiService = ApiService.getInstance();
-    const userService = new UserService(apiService);
+    const userService = UserService.getInstance(apiService);
 
     ipcMain.handle('auth:login', async (_, { username, password }) => {
         try {
