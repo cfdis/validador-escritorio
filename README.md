@@ -14,6 +14,13 @@ A minimal Electron application with TypeScript
 $ npm install
 ```
 
+### Build Migrations
+- Execute this command to build Kysely migrations before running the project for the first time:
+
+```bash
+$ npm run build:migrations
+```
+
 ### Development
 
 ```bash

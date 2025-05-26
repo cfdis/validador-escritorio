@@ -6,10 +6,13 @@ declare global {
   interface Window {
     electron: ElectronAPI
     auth: {
-      login: (username: string, password: string) => Promise<ApiResponse<void | ApiErrorDetails>>
-      logout: () => Promise<void | ApiErrorDetails>
+      login: (username: string, password: string, remember: boolean) => Promise<ApiResponse<void | ApiErrorDetails>>
+      logout: (fullLogout: boolean) => Promise<void | ApiErrorDetails>
       getUser: () => Promise<any | ApiErrorDetails>
       checkLogin: (empresaId?: number) => Promise<ApiResponse<boolean | ApiErrorDetails>>
+      getSavedUsers: () => Promise<ApiResponse<Record<string, string>[] | ApiErrorDetails>>
+      loginDirect: (email: string) => Promise<ApiResponse<boolean | ApiErrorDetails>>
+      deleteSavedUser: (email: string) => Promise<ApiResponse<void | ApiErrorDetails>>
     }
     api: {
       get: (endpoint: string, urlParams?: any) => Promise<any>
@@ -35,7 +38,7 @@ declare global {
         getByUuids: (uuids: string[]) => Promise<any[]>
       }
     }
-    app:{
+    app: {
       getVersion: () => Promise<string>
     }
   }

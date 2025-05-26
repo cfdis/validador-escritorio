@@ -39,7 +39,8 @@ function init(): void {
     });
 
     $('#userButton').on('click', () => toggleMenu());
-    $('#logoutButton').on('click', (e) => logout(e));
+    $('#logoutButton').on('click', (e: any) => logout(e));
+    $('#switchUserButton').on('click', (e: any) => logout(e, false));
 
     $(document).on('click', (e) => {
       if (!$(e.target).closest('#userMenu').length) {
@@ -115,9 +116,9 @@ function handleResize() {
   }
 }
 
-function logout(e) {
+function logout(e: any, fullLogout: boolean = true): void {
   e.preventDefault();
-  deps.us.logout().then(() => {
+  deps.us.logout(fullLogout).then(() => {
     toggleMenu();
     $('#userName').text('Usuario');
     $('#userEmail').text('');

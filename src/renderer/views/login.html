@@ -3,19 +3,32 @@
   <div class="header">
     <img src="assets/img/logo.png" alt="Logo" class="logo mx-auto mb-3 w-48">
   </div>
-  <h2 class="text-2xl font-semibold mb-4">Iniciar sesión</h2>
 
-  <form id="loginForm">
-    <input type="email" id="email" placeholder="Correo electrónico" required
-      class="w-full mb-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500">
+  <div id="userListContainer" class="space-y-3 hidden">
+    <h2 class="text-2xl font-semibold mb-4">Selecciona una cuenta</h2>
+    <div id="userList" class="flex flex-col gap-2"></div>
+    <button id="useAnotherAccount" class="text-sm text-blue-600 hover:underline mt-4">Iniciar con otra cuenta</button>
+  </div>
 
-    <input type="password" id="password" placeholder="Contraseña" required
-      class="w-full mb-4 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500">
+  <div id="loginFormContainer" class="hidden">
+    <form id="loginForm">
+      <h2 class="text-2xl font-semibold mb-4">Iniciar sesión</h2>
+      <input type="email" id="email" placeholder="Correo electrónico" required
+        class="w-full mb-3 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500">
 
-    <button type="submit"
-      class="btn w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-      id="loginButton">
-      Entrar
-    </button>
-  </form>
+      <input type="password" id="password" placeholder="Contraseña" required
+        class="w-full mb-4 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-500">
+
+      <div class="flex items-center mb-4">
+        <input type="checkbox" id="rememberUser" class="mr-2">
+        <label for="rememberUser" class="text-sm">Mantener la sesión iniciada</label>
+      </div>
+
+      <button type="submit"
+        class="btn w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+        id="loginButton">
+        Entrar
+      </button>
+    </form>
+  </div>
 </div>

@@ -1,13 +1,17 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
 import { QrParams } from '../main/utils/Interfaces'
+import { get } from 'http'
 
 // Custom APIs for renderer
 const authApi = {
-  login: (username: string, password: string) => ipcRenderer.invoke('auth:login', { username, password }),
-  logout: () => ipcRenderer.invoke('auth:logout'),
+  login: (username: string, password: string, remember: boolean) => ipcRenderer.invoke('auth:login', { username, password, remember }),
+  logout: (fullLogout:boolean = true) => ipcRenderer.invoke('auth:logout', fullLogout),
   getUser: () => ipcRenderer.invoke('auth:getUser'),
-  checkLogin: (empresaId?: number) => ipcRenderer.invoke('auth:checkLogin', empresaId)
+  checkLogin: (empresaId?: number) => ipcRenderer.invoke('auth:checkLogin', empresaId),
+  getSavedUsers: () => ipcRenderer.invoke('auth:getSavedUsers'),
+  loginDirect: (email: string) => ipcRenderer.invoke('auth:loginDirect', email),
+  deleteSavedUser: (email: string) => ipcRenderer.invoke('auth:deleteSavedUser', email)
 }
 
 const api = {

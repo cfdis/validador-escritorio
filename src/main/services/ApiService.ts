@@ -2,13 +2,17 @@ import axios, { AxiosProgressEvent, AxiosRequestConfig, AxiosResponse } from 'ax
 import { ApiErrorDetails, ApiResponse, LaravelException } from '../utils/Interfaces';
 import { is } from '@electron-toolkit/utils';
 import keytar from 'keytar';
+import { app } from 'electron';
 
 export class ApiService {
     environment: any = null;
-    SERVICE = 'validador_cfdi_app';
-    ACCOUNT = 'current_user';
+    APP_NAME = '';
+    ACCOUNT: Record<string, string> = {
+        email: ''
+    };
 
     private constructor() {
+        this.APP_NAME = app.getName();
         this.environment = {
             apiUrl: is.dev ? 'http://localhost:8080/validador/' : 'https://facturabilidad.com/validador/',
             frontUrl: is.dev ? 'http://localhost:8080/app/' : 'https://facturabilidad.com/app/',
@@ -23,19 +27,49 @@ export class ApiService {
         return ApiService.instance;
     }
 
+    public setAccount(email: string): void {
+        this.ACCOUNT.email = email;
+        this.getJwtToken().then(token => {
+            this.ACCOUNT.token = token || '';
+        });
+    }
+
     // Establece el token JWT. (usualmente desde el userService)
-    public async setToken(token: string): Promise<void> {
-        await keytar.setPassword(this.SERVICE, this.ACCOUNT, token);
+    public async setToken(token: string, email: string, remember: boolean = false): Promise<void> {
+        if (!email || !token) {
+            throw new Error('Error de autenticación');
+        }
+        if (remember) {
+            await keytar.setPassword(this.APP_NAME, email, token);
+        } else {
+            this.forgetToken(email);
+        }
+        this.ACCOUNT.email = email;
+        this.ACCOUNT.token = token;
     }
 
     // Cuando se cierra la sesión, se elimina el token.
-    public async removeToken(): Promise<void> {
-        await keytar.deletePassword(this.SERVICE, this.ACCOUNT);
+    public async removeToken(forgot: boolean = false): Promise<void> {
+        if (forgot) {
+            await this.forgetToken(this.ACCOUNT.email);
+        }
+        this.ACCOUNT.email = '';
+        this.ACCOUNT.token = '';
+    }
+
+    public async forgetToken(email: string): Promise<void> {
+        await keytar.deletePassword(this.APP_NAME, email);
     }
 
     // Obtiene el token JWT.
     private async getJwtToken(): Promise<string | null> {
-        return await keytar.getPassword(this.SERVICE, this.ACCOUNT);
+        if (this.ACCOUNT.email === '') {
+            return null;
+        }
+        // if (this.ACCOUNT.token && this.ACCOUNT.token !== '') {
+        //     return this.ACCOUNT.token;
+        // }
+        return await keytar.getPassword(this.APP_NAME, this.ACCOUNT.email);
     }
 
     // Configura los encabezados para la petición.

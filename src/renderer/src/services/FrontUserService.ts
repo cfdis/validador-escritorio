@@ -20,13 +20,18 @@ export class FrontUserService extends FrontApi {
         this.auth = window.auth;
     }
 
-    async login(email: string, password: string) {
-        const response = await this.auth.login(email, password);
+    async login(email: string, password: string, remember: boolean = false) {
+        const response = await this.auth.login(email, password, remember);
         return this.handleResponse<void>(response);
     }
 
-    async logout() {
-        const response = await this.auth.logout();
+    async loginDirect(email: string) {
+        const response = await this.auth.loginDirect(email);
+        return this.handleResponse<boolean>(response);
+    }
+
+    async logout(fullLogout: boolean = true) {
+        const response = await this.auth.logout(fullLogout);
         return this.handleResponse<void>(response);
     }
 
@@ -44,6 +49,16 @@ export class FrontUserService extends FrontApi {
             $('#userMenu').hide();
         }
         return this.handleResponse<boolean>(response);
+    }
+
+    async obtenerUsuariosGuardados(): Promise<Record<string, string>[]> {
+        const response = await this.auth.getSavedUsers();
+        return this.handleResponse<Record<string, string>[]>(response);
+    }
+
+    async eliminarUsuarioGuardado(email: string): Promise<void> {
+        const response = await this.auth.deleteSavedUser(email);
+        return this.handleResponse<void>(response);
     }
 
     private async loadUser() {
