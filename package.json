@@ -1,9 +1,10 @@
 {
   "name": "validador_cfdi",
-  "version": "1.0.2",
-  "description": "Validador cfdi",
+  "version": "1.0.3",
+  "productName": "ValidadorCFDI",
+  "description": "Validador CFDI para escritorio",
   "main": "./out/main/index.js",
-  "author": "Eduardo Islas",
+  "author": "facturabilidad.com",
   "homepage": "https://facturabilidad.com/validador",
   "scripts": {
     "format": "prettier --write .",
@@ -21,6 +22,31 @@
     "build:linux": "npm run build && electron-builder --linux",
     "build:migrations": "tsc --project tsconfig.migrations.json",
     "publish:win": "npm run build && node build-env.js"
+  },
+  "build": {
+    "appId": "com.facturabilidad.validador",
+    "artifactName": "${productName}-${os}.${ext}",
+    "win": {
+      "target": [
+        "appx",
+        "msi"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "appx": {
+      "applicationId": "ValidadorCFDI",
+      "identityName": "Facturabilidad.ValidadorCFDI",
+      "publisher": "CN=developmentca",
+      "publisherDisplayName": "Facturabilidad.com",
+      "backgroundColor": "#1e2a38"
+    },
+    "msi": {
+    "oneClick": false,
+    "perMachine": true,
+    "createDesktopShortcut": true,
+    "createStartMenuShortcut": true,
+    "shortcutName": "Validador Cfdi"
+  }
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",

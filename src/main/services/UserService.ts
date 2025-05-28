@@ -49,7 +49,12 @@ export class UserService {
     }
 
     public async deleteSavedUser(email: string): Promise<void> {
-        await this._api.forgetToken(email);
+        try {
+            this._api.setAccount(email);
+            await this.logout(true);
+        } catch (error) {
+            await this._api.forgetToken(email);
+        }
     }
 
     public getUser() {
