@@ -66,9 +66,9 @@ export class ApiService {
         if (this.ACCOUNT.email === '') {
             return null;
         }
-        // if (this.ACCOUNT.token && this.ACCOUNT.token !== '') {
-        //     return this.ACCOUNT.token;
-        // }
+        if (this.ACCOUNT.token && this.ACCOUNT.token !== '') {
+            return this.ACCOUNT.token;
+        }
         return await keytar.getPassword(this.APP_NAME, this.ACCOUNT.email);
     }
 
