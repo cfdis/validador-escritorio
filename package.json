@@ -20,7 +20,7 @@
     "build:win": "npm run build && electron-builder --win",
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux",
-    "build:migrations": "tsc --project tsconfig.migrations.json",
+    "build:migrations": "tsc --project tsconfig.migrations.json --listEmittedFiles",
     "publish:win": "npm run build && node build-env.js"
   },
   "build": {
