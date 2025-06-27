@@ -1,6 +1,8 @@
 import { app } from "electron";
 import { ApiService } from "./ApiService";
 import keytar from 'keytar';
+import { UserRepository } from "../db/repo/UserRepository";
+import { SyncService } from "./SyncService";
 
 export class UserService {
     checkLoginPromise: Promise<boolean> | null = null;
@@ -9,11 +11,14 @@ export class UserService {
     cacheTTL = 500;
     _user: any = undefined;
     APP_NAME = '';
+    private syncStarted = false; // Bandera para controlar si la sincronización ya inició
     // sat = null;
     // router = null;
     // _empresaPromise = undefined;
     // _empresas = {};
 
+    private userRepo = UserRepository.getInstance();
+    private syncService = SyncService.getInstance();
 
     private constructor(private _api: ApiService) {
         this.APP_NAME = app.getName()
@@ -32,10 +37,13 @@ export class UserService {
         const response = await this._api.post('login', {}, { email, password });
         if (response?.token) {
             await this._api.setToken(response.token, email, remember);
-        }
-    }
 
-    public async loginDirect(email: string): Promise<boolean> {
+            // Verificar usuario y iniciar sincronización
+            if (response.user?.id) {
+                await this.ensureUserExists(response.user);
+            }
+        }
+    } public async loginDirect(email: string): Promise<boolean> {
         this._api.setAccount(email);
         return this.checkLogin();
     }
@@ -44,7 +52,10 @@ export class UserService {
         if (fullLogout) {
             await this._api.post('logout');
         }
-        await this._api.removeToken(fullLogout);
+        await this._api.removeToken(fullLogout);        // Detener sincronización al hacer logout
+        this.syncService.stopSync();
+        this.syncStarted = false; // Resetear bandera de sincronización
+
         this.reset();
     }
 
@@ -96,9 +107,15 @@ export class UserService {
 
         this.checkLoginPromise = new Promise((resolve, reject) => {
             this._api.get('check-login/full', params)
-                .then(result => {
+                .then(async result => {
                     // const lastId = this._user?.id;
                     this.setUser(result);
+
+                    // Verificar y crear usuario en la base local si no existe
+                    if (result?.id) {
+                        await this.ensureUserExists(result);
+                    }
+
                     // if (lastId && lastId !== result.id) {
                     //     location.reload();
                     //     return;
@@ -120,10 +137,31 @@ export class UserService {
                 .finally(() => {
                     this.lastCheckLoginTime = Date.now();
                     this.checkLoginPromise = null;
-                });
-        });
+                });        });
 
         return this.checkLoginPromise;
+    }
+
+    private async ensureUserExists(user: any): Promise<void> {
+        try {
+            const existingUser = await this.userRepo.getUserById(user.id);
+            if (!existingUser) {
+                // Crear nuevo usuario
+                await this.userRepo.createUser({
+                    id: user.id,
+                    email: user.email || '',
+                    last_sync: undefined
+                });
+            }
+
+            // Iniciar sincronización solo si no se ha iniciado ya
+            if (!this.syncStarted) {
+                this.syncService.startSync(user.id);
+                this.syncStarted = true;
+            }
+        } catch (error) {
+            console.error('Error verificando/creando usuario:', error);
+        }
     }
 
     public async getSavedUsers(): Promise<Record<string, string>[]> {
@@ -217,13 +255,14 @@ export class UserService {
     //             .finally(() => {
     //                 this._empresaPromise = undefined;
     //             });
-    //     });
+    //            });
 
     //     return this._empresaPromise;
     // }
 
     reset() {
         this._user = undefined;
+        this.syncStarted = false; // Resetear bandera de sincronización
         // this._empresas = {};
         this.lastCheckLoginResult = null;
     }

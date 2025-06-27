@@ -55,3 +55,37 @@ export interface ValidacionCfdiResponseItem {
     resultado?: ValidacionCfdiResult;
     error?: string;
 }
+
+export interface SyncResponseItem {
+    uuid: string; // UUID del CFDI
+    params: QrParams; // Parámetros QR generados en el backend
+    emisor_rfc: string;
+    receptor_rfc: string;
+    estado: string;
+    created_at: string;
+    updated_at: string;
+    pivot?: any; // Información de pivot de la relación muchos a muchos
+    resultado: {
+        ConsultaResult: ValidacionCfdiResult;
+    }
+}
+
+export interface SyncPaginatedResponse {
+    current_page: number;
+    data: SyncResponseItem[];
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: Array<{
+        url: string | null;
+        label: string;
+        active: boolean;
+    }>;
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+    total: number;
+}

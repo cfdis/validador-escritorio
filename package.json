@@ -21,6 +21,9 @@
     "build:mac": "npm run build && electron-builder --mac",
     "build:linux": "npm run build && electron-builder --linux",
     "build:migrations": "tsc --project tsconfig.migrations.json --listEmittedFiles",
+    "bump:patch": "npm version patch && npm run publish:win",
+    "bump:minor": "npm version minor && npm run publish:win",
+    "bump:major": "npm version major && npm run publish:win",
     "publish:win": "npm run build && node build-env.js"
   },
   "build": {
@@ -41,12 +44,12 @@
       "backgroundColor": "#1e2a38"
     },
     "msi": {
-    "oneClick": false,
-    "perMachine": true,
-    "createDesktopShortcut": true,
-    "createStartMenuShortcut": true,
-    "shortcutName": "Validador Cfdi"
-  }
+      "oneClick": false,
+      "perMachine": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Validador Cfdi"
+    }
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",

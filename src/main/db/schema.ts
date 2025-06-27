@@ -67,7 +67,7 @@ export type Cfdi = Selectable<CfdiTable>
 export type NewCfdi = Insertable<CfdiTable>
 export type UpdateCfdi = Updateable<CfdiTable>
 
-export interface CfdiUserTable{
+export interface CfdiUserTable {
     cfdi_id: number;
     user_id: number;
 }
@@ -76,6 +76,18 @@ export type CfdiUser = Selectable<CfdiUserTable>
 export type NewCfdiUser = Insertable<CfdiUserTable>
 export type UpdateCfdiUser = Updateable<CfdiUserTable>
 
+export interface UsersTable {
+    id: number; // No generado, viene del API
+    email: string;
+    last_sync?: string;
+    created_at?: ColumnType<Date, string>;
+    updated_at?: ColumnType<Date, string, string>;
+}
+
+export type User = Selectable<UsersTable>
+export type NewUser = Insertable<UsersTable>
+export type UpdateUser = Updateable<UsersTable>
+
 export interface Database {
     persons: PersonTable;
     estatus: EstatusTable;
@@ -83,4 +95,5 @@ export interface Database {
     es_cancelable: EsCancelableTable;
     cfdis: CfdiTable;
     cfdi_user: CfdiUserTable;
+    users: UsersTable;
 }

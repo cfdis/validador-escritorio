@@ -79,7 +79,76 @@ $ electron-windows-store `
     --identity-name 1845facturablablabla.blabla `
     --assets D:\Proyectos\Electron\validador_cfdi\resources
 ```
+### Publicar release a github
 
+Este proyecto está configurado para publicar automáticamente releases a GitHub utilizando electron-builder. El repositorio configurado es `cfdis/validador-escritorio`.
+
+#### Requisitos previos
+
+1. **Token de GitHub**: Es necesario configurar un token de acceso personal de GitHub con permisos de repositorio.
+
+```bash
+# Configurar el token como variable de entorno
+$ $env:GH_TOKEN="tu_github_token_aqui"
+```
+
+2. **Variables de entorno**: Crear un archivo `.env` en la raíz del proyecto con las variables necesarias para la publicación.
+
+#### Scripts disponibles para versionado y publicación
+
+El proyecto incluye scripts automatizados para incrementar la versión y publicar:
+
+```bash
+# Incrementar versión patch (1.0.3 -> 1.0.4) y publicar
+$ npm run bump:patch
+
+# Incrementar versión minor (1.0.3 -> 1.1.0) y publicar
+$ npm run bump:minor
+
+# Incrementar versión major (1.0.3 -> 2.0.0) y publicar
+$ npm run bump:major
+```
+
+#### Proceso manual de publicación
+
+Si prefieres controlar el proceso manualmente:
+
+1. **Actualizar versión**:
+```bash
+$ npm version patch  # o minor/major según corresponda
+```
+
+2. **Construir y publicar**:
+```bash
+$ npm run publish:win
+```
+
+#### Qué sucede durante la publicación
+
+1. Se ejecuta el build completo del proyecto (`npm run build`)
+2. Se invoca `electron-builder --win --publish always` que:
+   - Construye los instaladores para Windows (AppX y MSI)
+   - Crea un release en GitHub con los artefactos generados
+   - Sube los archivos de instalación al release
+
+#### Configuración de publicación
+
+La configuración de publicación se encuentra en `electron-builder.yml`:
+
+```yaml
+publish:
+  provider: github
+  owner: cfdis
+  repo: validador-escritorio
+```
+
+#### Artefactos generados
+
+- **AppX**: Para distribución a través de Microsoft Store
+- **MSI**: Para instalación directa en Windows
+- **Archivos**: `ValidadorCFDI-win.appx` y `ValidadorCFDI-win.msi`
+
+> **Nota**: Asegúrate de que el token de GitHub tenga los permisos necesarios y que tengas acceso de escritura al repositorio `cfdis/validador-escritorio`.
 
 ## Uso de marca y logotipo
 

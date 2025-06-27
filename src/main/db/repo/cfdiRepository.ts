@@ -1,16 +1,13 @@
 import { InsertResult, Kysely, UpdateResult } from 'kysely';
 import { ApiService } from '../../services/ApiService';
-import { UserService } from '../../services/UserService';
 import { DataEntry } from '../../utils/Interfaces';
 import { db } from '../client';
 
 export class CfdiRepository {
     private apiService: ApiService;
-    private userService: UserService;
 
     private constructor() {
         this.apiService = ApiService.getInstance();
-        this.userService = UserService.getInstance(this.apiService);
     }
 
     private static instance: CfdiRepository | null = null;
@@ -19,11 +16,7 @@ export class CfdiRepository {
             CfdiRepository.instance = new CfdiRepository();
         }
         return CfdiRepository.instance;
-    }
-
-    async guardarOActualizarCfdi(entry: DataEntry) {
-        const userId = this.userService.getUser()?.id;
-
+    } async guardarOActualizarCfdi(entry: DataEntry, userId?: number) {
         if (!userId) {
             return;
         }
@@ -179,22 +172,15 @@ export class CfdiRepository {
             .executeTakeFirstOrThrow();
 
         return found.id;
-    }
-
-    async eliminarCfdi(id: number): Promise<void> {
-        const userId = this.userService.getUser()?.id;
-
+    } async eliminarCfdi(id: number, userId: number): Promise<void> {
         if (!userId) {
             return;
         }
 
         // Eliminar la relación entre el CFDI y el usuario
         await db.deleteFrom('cfdi_user').where('cfdi_id', '=', id).where('user_id', '=', userId).execute();
-    }
-
-    async eliminarCfdiByUuid(uuid: string): Promise<void> {
+    } async eliminarCfdiByUuid(uuid: string, userId: number): Promise<void> {
         // Eliminar la relación entre el CFDI y el usuario
-        const userId = this.userService.getUser()?.id;
         if (!userId) {
             return;
         }
@@ -205,10 +191,7 @@ export class CfdiRepository {
             return;
         }
         await db.deleteFrom('cfdi_user').where('cfdi_id', '=', cfdi.id).where('user_id', '=', userId).execute();
-    }
-
-    async obtenerCfdis(): Promise<any[]> {
-        const userId = this.userService.getUser()?.id;
+    } async obtenerCfdis(userId: number): Promise<any[]> {
         if (!userId) {
             return [];
         }
@@ -245,10 +228,7 @@ export class CfdiRepository {
             ])
             .orderBy('cfdis.updated_at', 'desc')
             .execute();
-    }
-
-    async obtenerCfdiByUuid(uuid: string): Promise<any> {
-        const userId = this.userService.getUser()?.id;
+    } async obtenerCfdiByUuid(uuid: string, userId: number): Promise<any> {
         if (!userId) {
             return null;
         }
@@ -285,10 +265,7 @@ export class CfdiRepository {
             ])
             .where('uuid', '=', uuid)
             .executeTakeFirst();
-    }
-
-    async obtenerCfdisByUuid(uuids: string[]): Promise<any[]> {
-        const userId = this.userService.getUser()?.id;
+    } async obtenerCfdisByUuid(uuids: string[], userId: number): Promise<any[]> {
         if (!userId) {
             return [];
         }
