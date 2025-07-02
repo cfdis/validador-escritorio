@@ -28,11 +28,12 @@
   },
   "build": {
     "appId": "com.facturabilidad.validador",
-    "artifactName": "${productName}-${os}.${ext}",
+    "artifactName": "${productName}-${version}-${os}.${ext}",
     "win": {
       "target": [
         "appx",
-        "msi"
+        "msi",
+        "nsis"
       ],
       "icon": "build/icon.ico"
     },
