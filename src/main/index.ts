@@ -8,7 +8,7 @@ import { registerXmlHandlers } from './ipc/xmlHandlers'
 import { registerValidacionHandlers } from './ipc/validacionHandlers'
 import { migrateDatabase } from './db/migrator'
 import { registerDbHandlers } from './ipc/dbHandlers'
-import { autoUpdater } from 'electron-updater';
+// import { autoUpdater } from 'electron-updater';
 import { registerAppHandlers } from './ipc/appHandlers'
 
 function createWindow(): void {
@@ -59,7 +59,9 @@ app.whenReady().then(() => {
 
   createWindow()
 
-  autoUpdater.checkForUpdatesAndNotify();
+  // Distribución mediante Microsoft store
+  // por lo que se desactivan las actualizaciones automáticas
+  // autoUpdater.checkForUpdatesAndNotify();
 
   migrateDatabase();
 
@@ -78,18 +80,18 @@ app.whenReady().then(() => {
   })
 })
 
-autoUpdater.on('update-downloaded', async (_info) => {
-  const result = await dialog.showMessageBox({
-    type: 'info',
-    title: 'Actualización disponible',
-    message: 'Se ha descargado una nueva versión. ¿Quieres reiniciar y actualizar ahora?',
-    buttons: ['Sí', 'Más tarde'],
-  });
+// autoUpdater.on('update-downloaded', async (_info) => {
+//   const result = await dialog.showMessageBox({
+//     type: 'info',
+//     title: 'Actualización disponible',
+//     message: 'Se ha descargado una nueva versión. ¿Quieres reiniciar y actualizar ahora?',
+//     buttons: ['Sí', 'Al reiniciar'],
+//   });
 
-  if (result.response === 0) { // 0 = primer botón ("Sí")
-    autoUpdater.quitAndInstall(); // 🔥 Cierra y actualiza
-  }
-});
+//   if (result.response === 0) { // 0 = primer botón ("Sí")
+//     autoUpdater.quitAndInstall(); // 🔥 Cierra y actualiza
+//   }
+// });
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

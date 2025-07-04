@@ -1,10 +1,13 @@
 {
   "name": "validador_cfdi",
   "version": "1.1.1",
-  "productName": "ValidadorCFDI",
+  "productName": "Validador CFDI",
   "description": "Validador CFDI para escritorio",
   "main": "./out/main/index.js",
-  "author": "facturabilidad.com",
+  "author": {
+    "name": "FACTURABILIDAD FACTURACION ELECTRONICA Y CONTABILIDAD S.A.S.",
+    "email": "soporte@facturabilidad.com"
+  },
   "homepage": "https://facturabilidad.com/validador",
   "scripts": {
     "format": "prettier --write .",
@@ -70,7 +73,7 @@
       "applicationId": "ValidadorCFDI",
       "identityName": "Facturabilidad.ValidadorCFDI",
       "publisher": "CN=developmentca",
-      "publisherDisplayName": "Facturabilidad.com",
+      "publisherDisplayName": "FACTURABILIDAD FACTURACION ELECTRONICA Y CONTABILIDAD S.A.S.",
       "backgroundColor": "#1e2a38"
     },
     "msi": {
